@@ -1,0 +1,26 @@
+﻿{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "https://localhost:8443",
+      "sslPort": 44396
+    }
+  },
+  "profiles": {
+    "BirthdayNotificationsBot": {
+      "commandName": "Project",
+      "applicationUrl": "https://localhost:8443",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }, 
+    "BirthdayNotificationsBot-Production": {
+      "commandName": "Project",
+      "applicationUrl": "https://localhost:8443",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Production"
+      }
+    }
+  }
+}
