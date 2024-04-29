@@ -1,4 +1,5 @@
 using BirthdayNotificationsBot.Bll.Services.Interfaces;
+using BirthdayNotificationsBot.Dal.Repositories.Interfaces;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -7,11 +8,14 @@ namespace BirthdayNotificationsBot.Bll.Services;
 public class MessageService : IMessageService
 {
     private readonly ITelegramBotClient _telegramBotClient;
+    private readonly IUsersDataRepository _usersDataRepository;
     private readonly ILogger<MessageService> _logger;
 
-    public MessageService(ITelegramBotClient telegramBotClient, ILogger<MessageService> logger)
+
+    public MessageService(ITelegramBotClient telegramBotClient, IUsersDataRepository usersDataRepository ,ILogger<MessageService> logger)
     {
         _telegramBotClient = telegramBotClient;
+        _usersDataRepository = usersDataRepository;
         _logger = logger;
     }
 
@@ -34,6 +38,7 @@ public class MessageService : IMessageService
         Task<Message> action = message.Text switch
         {
             "/start" => BotActions.BotActions.SendStartText(_telegramBotClient, message, cancellationToken),
+            string curText when curText == "/test" && message.From!.Id == 626787041  => BotActions.BotActions.TestDalMenuShow(_telegramBotClient, message, cancellationToken),
             _ => BotActions.BotActions.VariableMessageError(_telegramBotClient, message, cancellationToken)
         };
 

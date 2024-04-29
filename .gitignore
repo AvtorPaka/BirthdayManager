@@ -486,3 +486,6 @@ $RECYCLE.BIN/
 
 #Hide
 appsettings.Production.json
+*.db
+*.db-shm
+*.db-wal

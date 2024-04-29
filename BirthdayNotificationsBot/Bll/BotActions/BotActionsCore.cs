@@ -1,5 +1,10 @@
 using BirthdayNotificationsBot.Bll.BotActions.Utils;
 using BirthdayNotificationsBot.Bll.BotActions.Utils.Enums;
+using BirthdayNotificationsBot.Dal.Context;
+using BirthdayNotificationsBot.Dal.Models;
+using BirthdayNotificationsBot.Dal.Repositories.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -10,7 +15,7 @@ namespace BirthdayNotificationsBot.Bll.BotActions;
 public static partial class BotActions
 {
     public static async Task<Message> SendStartText(ITelegramBotClient telegramBotClient, Message message, CancellationToken cancellationToken)
-    {   
+    {
         InlineKeyboardMarkup markup = ReplyMarkupModels.GetInlineKeyboard(InlineKeyboardType.StartMenu);
 
         return await telegramBotClient.SendTextMessageAsync(

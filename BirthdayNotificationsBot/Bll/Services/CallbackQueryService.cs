@@ -1,4 +1,7 @@
 using BirthdayNotificationsBot.Bll.Services.Interfaces;
+using BirthdayNotificationsBot.Dal.Context;
+using BirthdayNotificationsBot.Dal.Repositories.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -6,11 +9,13 @@ namespace BirthdayNotificationsBot.Bll.Services;
 public class CallbackQueryService : ICallbackQueryService
 {
     private readonly ITelegramBotClient _telegramBotClient;
+    private readonly IUsersDataRepository _usersDataRepository;
     private readonly ILogger<CallbackQueryService> _logger;
 
-    public CallbackQueryService(ITelegramBotClient telegramBotClient, ILogger<CallbackQueryService> logger)
+    public CallbackQueryService(ITelegramBotClient telegramBotClient, IUsersDataRepository usersDataRepository ,ILogger<CallbackQueryService> logger)
     {
         _telegramBotClient = telegramBotClient;
+        _usersDataRepository = usersDataRepository;
         _logger = logger;
     }
 
@@ -21,7 +26,10 @@ public class CallbackQueryService : ICallbackQueryService
 
         Task<Message> action = callbackQuery.Data switch
         {   
-            "/someCallback" => BotActions.BotActions.VariableCallbackError(_telegramBotClient, callbackQuery, cancellationToken, errorMessage:"<b>Some message</b>"),
+            "/testAdd" => BotActions.BotActions.TestAddingUserToDb(_telegramBotClient, callbackQuery, _usersDataRepository, cancellationToken),
+            "/testDel" => BotActions.BotActions.TestDelitingUser(_telegramBotClient, callbackQuery, _usersDataRepository, callbackQuery.From.Id ,cancellationToken),
+            "/testEdit" => BotActions.BotActions.TestEditingUser(_telegramBotClient, callbackQuery, _usersDataRepository, callbackQuery.From.Id, cancellationToken),
+            "/testGet" => BotActions.BotActions.TestGettingUser(_telegramBotClient, callbackQuery, _usersDataRepository, callbackQuery.From.Id, cancellationToken),
             _ => BotActions.BotActions.VariableCallbackError(_telegramBotClient, callbackQuery, cancellationToken, errorMessage: "Callback not found")
         };
 
