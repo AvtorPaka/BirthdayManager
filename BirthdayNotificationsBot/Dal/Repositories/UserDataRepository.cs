@@ -54,6 +54,7 @@ public class UserDataRepository : IUsersDataRepository
         userToUpdateData.DateOfBirth = newUserData.DateOfBirth;
         userToUpdateData.UserWishes = newUserData.UserWishes;
         userToUpdateData.NeedToNotifyUser = newUserData.NeedToNotifyUser;
+        userToUpdateData.RegistrStatus = newUserData.RegistrStatus;
         await applicationDbContext.SaveChangesAsync(cancellationToken);
     }
 

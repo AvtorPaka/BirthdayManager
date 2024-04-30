@@ -5,10 +5,10 @@ namespace BirthdayNotificationsBot.Bll.BotActions.Utils;
 
 public static class ReplyMarkupModels
 {
-    private static readonly InlineKeyboardMarkup startMenu = new InlineKeyboardMarkup( new List<InlineKeyboardButton[]>() {
+    private static readonly InlineKeyboardMarkup firstTimeMenu = new InlineKeyboardMarkup(new List<InlineKeyboardButton[]>() {
             new InlineKeyboardButton[1]
             {
-                InlineKeyboardButton.WithCallbackData(text: "Plug_Button", callbackData: "/plug")
+                InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("1F510", System.Globalization.NumberStyles.HexNumber))} Зарегистрироваться", callbackData: "/registrNewUser")
             }
         }
     );
@@ -27,11 +27,31 @@ public static class ReplyMarkupModels
     }
     );
 
+    private static readonly InlineKeyboardMarkup mainUserMenu = new InlineKeyboardMarkup(new List<InlineKeyboardButton[]>() {
+        new InlineKeyboardButton[2] {
+            InlineKeyboardButton.WithCallbackData(text: "Войти в группу", callbackData: "/joinGroupOfUsers"),
+            InlineKeyboardButton.WithCallbackData(text: "Создать группу", callbackData: "/createNewGroup")
+        },
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: "Управление группами.", callbackData: "/manageGroupsOfUsersMenu")},
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: "Управление личными данными.", callbackData: "/editPersonalDataMenu")}, //В меню уже будут отображаться личные данные
+    }
+    );
+
+    private static readonly InlineKeyboardMarkup editPersonalDataMenu = new InlineKeyboardMarkup(new List<InlineKeyboardButton[]>() {
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: "Изменить личные данные", callbackData: "/editUserDataMenu")},
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: "Отключить уведомления во всех группах", callbackData: "/disableAllNotifiactions")},
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: "Удалить аккаунт с площадки", callbackData: "/deleteAccountFromAppMenu")},
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: "Назад", callbackData: "/goBackToMainUserMenu")},
+    }
+    );
+
     public static InlineKeyboardMarkup GetInlineKeyboard(InlineKeyboardType inlineKeyboardType)
     {
         InlineKeyboardMarkup inlineMarkup = inlineKeyboardType switch
         {
-            InlineKeyboardType.StartMenu => startMenu,
+            InlineKeyboardType.FirstTimeMenu => firstTimeMenu,
+            InlineKeyboardType.EditPersonalDataMenu => editPersonalDataMenu,
+            InlineKeyboardType.MainUserMenu => mainUserMenu,
             InlineKeyboardType.TestDALMenu => testDalMenu,
             _ => throw new ArgumentOutOfRangeException()
         };

@@ -1,3 +1,4 @@
+using BirthdayNotificationsBot.Bll.Models;
 using BirthdayNotificationsBot.Bll.Services.Interfaces;
 using BirthdayNotificationsBot.Dal.Context;
 using BirthdayNotificationsBot.Dal.Repositories.Interfaces;
@@ -24,8 +25,13 @@ public class CallbackQueryService : ICallbackQueryService
         _logger.LogInformation(">Received callback => Data: {mType} | MessageType : {dmType} | ID : {messageID} | ChatID : {chatID} | DateTime : {date} | UserData : {userData}",
         callbackQuery.Data, callbackQuery.Message!.Type, callbackQuery.Message!.Chat.Id, callbackQuery.Message.MessageId, DateTime.Now, callbackQuery.From);
 
+        UserBll currentUser = new UserBll(callbackQuery);
+
         Task<Message> action = callbackQuery.Data switch
         {   
+            "/registrNewUser" => BotActions.BotActions.RegistrNewUser(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+            "/editPersonalDataMenu" => BotActions.BotActions.EditPersonalDataMenu(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+            "/goBackToMainUserMenu" => BotActions.BotActions.GoBackToMainUserMenu(_telegramBotClient, callbackQuery, cancellationToken),
             "/testAdd" => BotActions.BotActions.TestAddingUserToDb(_telegramBotClient, callbackQuery, _usersDataRepository, cancellationToken),
             "/testDel" => BotActions.BotActions.TestDelitingUser(_telegramBotClient, callbackQuery, _usersDataRepository, callbackQuery.From.Id ,cancellationToken),
             "/testEdit" => BotActions.BotActions.TestEditingUser(_telegramBotClient, callbackQuery, _usersDataRepository, callbackQuery.From.Id, cancellationToken),

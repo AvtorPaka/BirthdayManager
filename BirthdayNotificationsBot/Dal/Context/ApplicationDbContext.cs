@@ -15,6 +15,6 @@ public class ApplicationDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var confing = new ConfigurationBuilder().AddJsonFile("appsettings.Production.json").SetBasePath(Directory.GetCurrentDirectory()).Build();
-        optionsBuilder.UseSqlite(confing.GetConnectionString("SQLiteConnetction"));
+        optionsBuilder.UseMySql(confing.GetConnectionString("MySQLConnection"), new MySqlServerVersion(new Version(8, 4, 0)));
     }
 }

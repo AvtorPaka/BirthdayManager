@@ -1,5 +1,7 @@
 using BirthdayNotificationsBot.Bll.BotActions.Utils;
 using BirthdayNotificationsBot.Bll.BotActions.Utils.Enums;
+using BirthdayNotificationsBot.Bll.Models;
+using BirthdayNotificationsBot.Bll.Models.Extensions;
 using BirthdayNotificationsBot.Dal.Models;
 using BirthdayNotificationsBot.Dal.Repositories.Interfaces;
 using Telegram.Bot;
@@ -35,18 +37,14 @@ public static partial class BotActions
             cancellationToken: cancellationToken
         );
 
-        Dal.Models.User testUser = new Dal.Models.User()
+        UserBll testUser = new UserBll(callbackQuery)
         {
-            ChatID = callbackQuery.Message!.Chat.Id,
-            UserId = callbackQuery.From.Id,
-            UserFirstName = callbackQuery.From.FirstName,
-            UserLogin = callbackQuery.From.Username ?? "N/a",
-            DateOfBirth = DateOnly.FromDateTime(DateTime.Now)
+            UserWishes = "Big fat blunt"
         };
 
         try
         {
-            await usersDataRepository.AddUser(testUser, cancellationToken);
+            await usersDataRepository.AddUser(testUser.ConvertToDalModel(), cancellationToken);
         }
         catch (OverflowException)
         {
@@ -59,7 +57,7 @@ public static partial class BotActions
         }
 
         return await telegramBotClient.SendTextMessageAsync(
-            chatId: callbackQuery.Message.Chat.Id,
+            chatId: callbackQuery.Message!.Chat.Id,
             text: "User was <b>Sucessfully added to Db.</b>",
             parseMode: ParseMode.Html,
             cancellationToken: cancellationToken
@@ -120,7 +118,7 @@ public static partial class BotActions
             return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while getting user from db.");
         }
 
-        string testUserDataString = $"User-id: {userToGet.UserId}\nChat-id: {userToGet.ChatID}\nUFM: {userToGet.UserFirstName}\nULog: {userToGet.UserLogin}\nUDOB: {userToGet.DateOfBirth}\nUwish: {userToGet.UserWishes}\nUntn: {userToGet.NeedToNotifyUser}";
+        string testUserDataString = $"User-id: {userToGet.UserId}\nChat-id: {userToGet.ChatID}\nUFM: {userToGet.UserFirstName}\nULog: {userToGet.UserLogin}\nUDOB: {userToGet.DateOfBirth}\nUwish: {userToGet.UserWishes}\nUntn: {userToGet.NeedToNotifyUser}\nURST: {userToGet.RegistrStatus}";
 
         return await telegramBotClient.SendTextMessageAsync(
             chatId: callbackQuery.Message!.Chat.Id,

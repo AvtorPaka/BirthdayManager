@@ -1,10 +1,5 @@
 using BirthdayNotificationsBot.Bll.BotActions.Utils;
 using BirthdayNotificationsBot.Bll.BotActions.Utils.Enums;
-using BirthdayNotificationsBot.Dal.Context;
-using BirthdayNotificationsBot.Dal.Models;
-using BirthdayNotificationsBot.Dal.Repositories.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -14,15 +9,42 @@ namespace BirthdayNotificationsBot.Bll.BotActions;
 
 public static partial class BotActions
 {
-    public static async Task<Message> SendStartText(ITelegramBotClient telegramBotClient, Message message, CancellationToken cancellationToken)
+    public static async Task<Message> FirstTimeText(ITelegramBotClient telegramBotClient, Message message, CancellationToken cancellationToken)
     {
-        InlineKeyboardMarkup markup = ReplyMarkupModels.GetInlineKeyboard(InlineKeyboardType.StartMenu);
+        InlineKeyboardMarkup markup = ReplyMarkupModels.GetInlineKeyboard(InlineKeyboardType.FirstTimeMenu);
 
         return await telegramBotClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: "<b>Test</b> message",
+            text: "<b>Привет</b>, вижу ты здесь впервые!\nЯ помогу тебе:\n\n&#128276; Не забывать о днях рождения друзей и близких.\n&#127873; Узнавать пожелания пользователей.\n\nНо сперва необходимо <b>пройти регистрацию</b>.",
             parseMode: ParseMode.Html,
             replyMarkup: markup,
+            cancellationToken: cancellationToken
+        );
+    }
+
+    public static async Task<Message> MainUserMenu(ITelegramBotClient telegramBotClient, Message message, CancellationToken cancellationToken)
+    {
+        InlineKeyboardMarkup mainMenuKeyboard = ReplyMarkupModels.GetInlineKeyboard(InlineKeyboardType.MainUserMenu);
+
+        return await telegramBotClient.SendTextMessageAsync(
+            chatId: message.Chat.Id,
+            text: "<b>Выбери</b> пункт меню:",
+            parseMode: ParseMode.Html,
+            replyMarkup: mainMenuKeyboard,
+            cancellationToken: cancellationToken
+        );
+    }
+
+    public static async Task<Message> GoBackToMainUserMenu(ITelegramBotClient telegramBotClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
+    {
+        InlineKeyboardMarkup mainMenuKeyboard = ReplyMarkupModels.GetInlineKeyboard(InlineKeyboardType.MainUserMenu);
+
+        return await telegramBotClient.EditMessageTextAsync(
+            chatId: callbackQuery.Message!.Chat.Id,
+            messageId: callbackQuery.Message.MessageId,
+            text: "<b>Выбери</b> пункт меню:",
+            parseMode: ParseMode.Html,
+            replyMarkup: mainMenuKeyboard,
             cancellationToken: cancellationToken
         );
     }

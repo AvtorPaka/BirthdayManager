@@ -1,6 +1,8 @@
 namespace BirthdayNotificationsBot.Bll.BotActions.Utils.Enums;
 public enum InlineKeyboardType
 {
-    StartMenu,
+    FirstTimeMenu,
+    MainUserMenu,
+    EditPersonalDataMenu,
     TestDALMenu
 }
