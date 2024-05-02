@@ -15,7 +15,7 @@ public static partial class BotActions
 
         return await telegramBotClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: "<b>Привет</b>, вижу ты здесь впервые!\nЯ помогу тебе:\n\n&#128276; Не забывать о днях рождения друзей и близких.\n&#127873; Узнавать пожелания пользователей.\n\nНо сперва необходимо <b>пройти регистрацию</b>.",
+            text: $"<b>Привет {message.From!.FirstName}</b>, вижу ты здесь впервые!\nЯ помогу тебе:\n\n&#128276; Не забывать о днях рождения друзей и близких.\n&#127881; Узнавать их пожелания к празднику.\n\nНо сперва необходимо <b>пройти регистрацию</b>.",
             parseMode: ParseMode.Html,
             replyMarkup: markup,
             cancellationToken: cancellationToken

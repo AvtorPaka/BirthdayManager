@@ -32,16 +32,48 @@ public static class ReplyMarkupModels
             InlineKeyboardButton.WithCallbackData(text: "Войти в группу", callbackData: "/joinGroupOfUsers"),
             InlineKeyboardButton.WithCallbackData(text: "Создать группу", callbackData: "/createNewGroup")
         },
-        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: "Управление группами.", callbackData: "/manageGroupsOfUsersMenu")},
-        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: "Управление личными данными.", callbackData: "/editPersonalDataMenu")}, //В меню уже будут отображаться личные данные
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("1F465", System.Globalization.NumberStyles.HexNumber))} Управление группами.", callbackData: "/manageGroupsOfUsersMenu")},
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("1F464", System.Globalization.NumberStyles.HexNumber))} Управление личными данными.", callbackData: "/editPersonalDataMenu")},
+        new InlineKeyboardButton[2] {
+            InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("2753", System.Globalization.NumberStyles.HexNumber))} Q/A", callbackData: "/qaMenu"),
+            InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("1F4E9", System.Globalization.NumberStyles.HexNumber))} Поддержка", callbackData: "/supportMenu")
+        }
     }
     );
 
-    private static readonly InlineKeyboardMarkup editPersonalDataMenu = new InlineKeyboardMarkup(new List<InlineKeyboardButton[]>() {
-        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: "Изменить личные данные", callbackData: "/editUserDataMenu")},
-        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: "Отключить уведомления во всех группах", callbackData: "/disableAllNotifiactions")},
-        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: "Удалить аккаунт с площадки", callbackData: "/deleteAccountFromAppMenu")},
-        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: "Назад", callbackData: "/goBackToMainUserMenu")},
+    private static readonly InlineKeyboardMarkup editPersonalDataMenuFirst = new InlineKeyboardMarkup(new List<InlineKeyboardButton[]>() {
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("1F527", System.Globalization.NumberStyles.HexNumber))} Изменить данные", callbackData: "/editPersonalDataSubmenu")},
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("1F515", System.Globalization.NumberStyles.HexNumber))} Отключить уведомления", callbackData: "/disableAllNotifiactions")},
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("1F5D1", System.Globalization.NumberStyles.HexNumber))} Удалить аккаунт", callbackData: "/deleteAccountFromAppMenu")},
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("2B05", System.Globalization.NumberStyles.HexNumber))} Назад", callbackData: "/goBackToMainUserMenu")},
+    }
+    );
+
+    private static readonly InlineKeyboardMarkup editPersonalDataMenuSecond = new InlineKeyboardMarkup(new List<InlineKeyboardButton[]>() {
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("1F527", System.Globalization.NumberStyles.HexNumber))} Изменить данные", callbackData: "/editPersonalDataSubmenu")},
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("1F514", System.Globalization.NumberStyles.HexNumber))} Включить уведомления", callbackData: "/enableAllNotifiactions")},
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("1F5D1", System.Globalization.NumberStyles.HexNumber))} Удалить аккаунт", callbackData: "/deleteAccountFromAppMenu")},
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("2B05", System.Globalization.NumberStyles.HexNumber))} Назад", callbackData: "/goBackToMainUserMenu")},
+    }
+    );
+
+    private static readonly InlineKeyboardMarkup ensureToDeleteAccountMenu = new InlineKeyboardMarkup(new List<InlineKeyboardButton[]>() {
+        new InlineKeyboardButton[2] {
+            InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("2B05", System.Globalization.NumberStyles.HexNumber))} Назад", callbackData: "/goBackToEditPersonalDataMenu"),
+            InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("1F5D1", System.Globalization.NumberStyles.HexNumber))} Удалить аккаунт.", callbackData: "/deleteAccountFromApp")
+        }
+    }
+    );
+
+    private static readonly InlineKeyboardMarkup editPersonalDataSubmenu = new InlineKeyboardMarkup(new List<InlineKeyboardButton[]>() {
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"Изменить дату рождения", callbackData: "/editUserDateOfBirthMenu")},
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"Изменить пожелания", callbackData: "/editUserWishesMenu")},
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("2B05", System.Globalization.NumberStyles.HexNumber))} Назад", callbackData: "/goBackToEditPersonalDataMenu")}
+    }
+    );
+
+    private static readonly InlineKeyboardMarkup confirmChangesButton = new InlineKeyboardMarkup(new List<InlineKeyboardButton[]>() {
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"Ок", callbackData: "/goBackToEditPersonalDataMenu")}
     }
     );
 
@@ -50,7 +82,11 @@ public static class ReplyMarkupModels
         InlineKeyboardMarkup inlineMarkup = inlineKeyboardType switch
         {
             InlineKeyboardType.FirstTimeMenu => firstTimeMenu,
-            InlineKeyboardType.EditPersonalDataMenu => editPersonalDataMenu,
+            InlineKeyboardType.EnsureToDeleteAccountMenu => ensureToDeleteAccountMenu,
+            InlineKeyboardType.EditPersonalDataMenuFirst => editPersonalDataMenuFirst,
+            InlineKeyboardType.EditPersonalDataMenuSecond => editPersonalDataMenuSecond,
+            InlineKeyboardType.EditPersonalDataSubmenu => editPersonalDataSubmenu,
+            InlineKeyboardType.ConfirmChangesButton => confirmChangesButton,
             InlineKeyboardType.MainUserMenu => mainUserMenu,
             InlineKeyboardType.TestDALMenu => testDalMenu,
             _ => throw new ArgumentOutOfRangeException()

@@ -44,13 +44,15 @@ public class MessageService : IMessageService
 
         Task<Message> action = message.Text switch
         {   
+            string curAction when !isUserRegistered => BotActions.BotActions.FirstTimeText(_telegramBotClient, message, cancellationToken),
             string curAction when curAction == "/test" && (message.From!.Id == 626787041)  => BotActions.BotActions.TestDalMenuShow(_telegramBotClient, message, cancellationToken),
-            string curAction when curAction == "/start" && !isUserRegistered => BotActions.BotActions.FirstTimeText(_telegramBotClient, message, cancellationToken),
             string curAction when curAction == "/start" && isUserRegistered && curUserRegistrStatus == RegistrStatus.NewUser => BotActions.BotActions.VariableMessageError(_telegramBotClient, message, cancellationToken, "Cперва <b>необходимо</b> завершить регистрацию.\nВведите свою дату рождения в формате <b>dd.mm.yyyy</b> (e.g 14.02.2005)"),
             string curAction when curAction == "/start" && isUserRegistered && curUserRegistrStatus == RegistrStatus.NeedToFillWishes => BotActions.BotActions.VariableMessageError(_telegramBotClient, message, cancellationToken, "Cперва <b>необходимо</b> завершить регистрацию.\nНапишите свои пожелания ко дня рождения:"),
-            string curAction when curAction == "/start" && isUserRegistered && curUserRegistrStatus == RegistrStatus.FullyRegistrated => BotActions.BotActions.MainUserMenu(_telegramBotClient, message, cancellationToken),
+            string curAction when (curAction == "/start" || curAction == "/menu") && isUserRegistered && curUserRegistrStatus == RegistrStatus.FullyRegistrated => BotActions.BotActions.MainUserMenu(_telegramBotClient, message, cancellationToken),
             string curAction when curUserRegistrStatus == RegistrStatus.NewUser => BotActions.BotActions.FillUserDateOfBirth(_telegramBotClient, message, _usersDataRepository, currentUser, cancellationToken),
-            string curAction when curUserRegistrStatus == RegistrStatus.NeedToFillWishes =>BotActions.BotActions.FillUserWishes(_telegramBotClient, message, _usersDataRepository, currentUser, cancellationToken),
+            string curAction when curUserRegistrStatus == RegistrStatus.NeedToFillWishes => BotActions.BotActions.FillUserWishes(_telegramBotClient, message, _usersDataRepository, currentUser, cancellationToken),
+            string curAction when curUserRegistrStatus == RegistrStatus.EditDateOfBirth => BotActions.BotActions.EditUserDateOfBirth(_telegramBotClient, message, _usersDataRepository, currentUser, cancellationToken),
+            string curAction when curUserRegistrStatus == RegistrStatus.EditUserWishes => BotActions.BotActions.EditUserWishes(_telegramBotClient, message, _usersDataRepository, currentUser, cancellationToken),
             _ => BotActions.BotActions.VariableMessageError(_telegramBotClient, message, cancellationToken)
         };
 

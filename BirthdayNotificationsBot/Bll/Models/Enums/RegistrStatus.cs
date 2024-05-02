@@ -3,8 +3,8 @@ public enum RegistrStatus
 {
     NewUser,
     NeedToFillWishes,
-    FullyRegistrated,
     EditDateOfBirth,
     EditUserWishes,
+    FullyRegistrated,
     ErrorState
 }

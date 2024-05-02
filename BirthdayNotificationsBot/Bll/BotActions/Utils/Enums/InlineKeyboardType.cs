@@ -3,6 +3,10 @@ public enum InlineKeyboardType
 {
     FirstTimeMenu,
     MainUserMenu,
-    EditPersonalDataMenu,
+    EditPersonalDataMenuFirst,
+    EditPersonalDataMenuSecond,
+    EditPersonalDataSubmenu,
+    EnsureToDeleteAccountMenu,
+    ConfirmChangesButton,
     TestDALMenu
 }

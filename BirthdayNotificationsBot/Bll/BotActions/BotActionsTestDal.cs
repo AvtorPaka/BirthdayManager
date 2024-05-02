@@ -9,10 +9,6 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
-//TODO - протестить DAL юнит, перейти на нормальную БД и протестить там.
-// Сделать переходную модель пользователя в BLL, удрочиться в независимость юнитов.
-//Сделать CRUD обработку пользователей с интерфейсом , не умереть.
-
 namespace BirthdayNotificationsBot.Bll.BotActions;
 public static partial class BotActions
 {

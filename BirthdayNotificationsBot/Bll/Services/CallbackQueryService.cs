@@ -29,10 +29,19 @@ public class CallbackQueryService : ICallbackQueryService
 
         Task<Message> action = callbackQuery.Data switch
         {   
+            "/editUserWishesMenu" => BotActions.BotActions.EditUserWishesMenu(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+            "/editUserDateOfBirthMenu" => BotActions.BotActions.EditUserDateOfBirthMenu(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+            "/editPersonalDataSubmenu" => BotActions.BotActions.EditUserDataSubMenu(_telegramBotClient, callbackQuery, cancellationToken),
+            "/disableAllNotifiactions" => BotActions.BotActions.DisableAllNotifications(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+            "/enableAllNotifiactions" => BotActions.BotActions.EnableAllNotifications(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+            "/deleteAccountFromAppMenu" => BotActions.BotActions.EnsureToDeleteAccountMenu(_telegramBotClient, callbackQuery, cancellationToken),
+            "/deleteAccountFromApp" => BotActions.BotActions.DeleteAccountFromTheApp(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
             "/registrNewUser" => BotActions.BotActions.RegistrNewUser(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+            "/goBackToEditPersonalDataMenu" => BotActions.BotActions.EditPersonalDataMenu(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
             "/editPersonalDataMenu" => BotActions.BotActions.EditPersonalDataMenu(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
             "/goBackToMainUserMenu" => BotActions.BotActions.GoBackToMainUserMenu(_telegramBotClient, callbackQuery, cancellationToken),
             "/testAdd" => BotActions.BotActions.TestAddingUserToDb(_telegramBotClient, callbackQuery, _usersDataRepository, cancellationToken),
+
             "/testDel" => BotActions.BotActions.TestDelitingUser(_telegramBotClient, callbackQuery, _usersDataRepository, callbackQuery.From.Id ,cancellationToken),
             "/testEdit" => BotActions.BotActions.TestEditingUser(_telegramBotClient, callbackQuery, _usersDataRepository, callbackQuery.From.Id, cancellationToken),
             "/testGet" => BotActions.BotActions.TestGettingUser(_telegramBotClient, callbackQuery, _usersDataRepository, callbackQuery.From.Id, cancellationToken),

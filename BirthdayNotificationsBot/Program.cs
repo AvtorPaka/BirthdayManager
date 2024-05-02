@@ -14,6 +14,10 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
     ContentRootPath = Directory.GetCurrentDirectory()
 });
 
+// Реализовать механику групп пользователей - создание, вход в группу по логину и ключу
+// Сделать управление группами - со стороны обычного пользователя и со стороны модератора.
+// Final (hope so) - сделать очередь уведомлений для каждой группы для каждого пользователя, отдельный сервис уведомлений.
+
 // Setup bot configuration
 if (!builder.Environment.IsProduction())
 {

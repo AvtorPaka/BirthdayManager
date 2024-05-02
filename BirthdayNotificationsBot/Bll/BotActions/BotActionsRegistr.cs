@@ -31,14 +31,7 @@ public static partial class BotActions
         catch (OverflowException)
         {
             await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Пользователь уже <b>существует.</b>");
-            return await telegramBotClient.EditMessageTextAsync(
-                chatId: callbackQuery.Message!.Chat.Id,
-                messageId: callbackQuery.Message.MessageId,
-                text: "<b>Выбери</b> пункт меню:",
-                parseMode: ParseMode.Html,
-                replyMarkup: ReplyMarkupModels.GetInlineKeyboard(Utils.Enums.InlineKeyboardType.MainUserMenu),
-                cancellationToken: cancellationToken
-            );
+            return await GoBackToMainUserMenu(telegramBotClient, callbackQuery, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -46,16 +39,11 @@ public static partial class BotActions
             return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060 <b>Невозможно</b> зарегистрировать нового пользователя.\nПопробуйте <b>позже.</b>");
         }
 
-        await telegramBotClient.EditMessageReplyMarkupAsync(
+        return await telegramBotClient.EditMessageTextAsync(
             chatId: callbackQuery.Message!.Chat.Id,
             messageId: callbackQuery.Message.MessageId,
+            text: "&#128198; <b>Дата рождения</b>\nВведите свою дату рождения в формате <b>dd.mm.yyyy</b>:\n(e.g 14.02.2005)",
             replyMarkup: null,
-            cancellationToken: cancellationToken
-        );
-
-        return await telegramBotClient.SendTextMessageAsync(
-            chatId: callbackQuery.Message!.Chat.Id,
-            text: "Введите свою дату рождения в формате <b>dd.mm.yyyy</b> (e.g 14.02.2005)",
             parseMode: ParseMode.Html,
             cancellationToken: cancellationToken
         );
@@ -73,7 +61,7 @@ public static partial class BotActions
         catch (Exception ex)
         {   
             Console.WriteLine($"{ex.Message}\nError occured while trying to parse date of birth.");
-            return await VariableMessageError(telegramBotClient, message, cancellationToken, "Дата должна соответствовать формату <b>dd.mm.yyyy</b>.");
+            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#10071;Дата должна соответствовать формату <b>dd.mm.yyyy</b>.");
         }
 
         try
@@ -95,7 +83,7 @@ public static partial class BotActions
 
         return await telegramBotClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: "&#9989; <b>Отлично!</b>\nТеперь напишии свои пожелания ко дню рождения:",
+            text: "&#127873; <b>Пожелания</b>\nОтлично! Теперь напиши свои пожелания ко дню рождения:",
             parseMode: ParseMode.Html,
             cancellationToken: cancellationToken
         );
@@ -124,7 +112,7 @@ public static partial class BotActions
 
         return await telegramBotClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: "&#9989; Регистрация завершена!\n\nЧтобы получать уведомления о днях рождениях других пользователей, необходимо вступить в группу или создать собственную.",
+            text: "&#9989; <b>Регистрация завершена!</b>\n\nЧтобы получать уведомления о днях рождениях других пользователей, необходимо вступить в группу или создать собственную.",
             parseMode: ParseMode.Html,
             replyMarkup: ReplyMarkupModels.GetInlineKeyboard(Utils.Enums.InlineKeyboardType.MainUserMenu),
             cancellationToken: cancellationToken
