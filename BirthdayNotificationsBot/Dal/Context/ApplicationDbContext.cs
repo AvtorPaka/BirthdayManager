@@ -6,6 +6,7 @@ namespace BirthdayNotificationsBot.Dal.Context;
 public class ApplicationDbContext : DbContext
 {
     public DbSet<User> Users {get; set;} = null!;
+    public DbSet<Group> Groups {get; set;} = null!;
     public ApplicationDbContext(): base()
     {
         Database.EnsureCreated();

@@ -10,6 +10,8 @@ using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace BirthdayNotificationsBot.Bll.BotActions;
+
+//Accesable only from creators telegram account(me), users dont even have a change to know about 
 public static partial class BotActions
 {
 
@@ -114,7 +116,9 @@ public static partial class BotActions
             return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while getting user from db.");
         }
 
-        string testUserDataString = $"User-id: {userToGet.UserId}\nChat-id: {userToGet.ChatID}\nUFM: {userToGet.UserFirstName}\nULog: {userToGet.UserLogin}\nUDOB: {userToGet.DateOfBirth}\nUwish: {userToGet.UserWishes}\nUntn: {userToGet.NeedToNotifyUser}\nURST: {userToGet.RegistrStatus}";
+
+        string userGroups = string.Join("\n", userToGet.Groups.Select(x => x.GroupInfo));
+        string testUserDataString = $"User-id: {userToGet.UserId}\nChat-id: {userToGet.ChatID}\nUFM: {userToGet.UserFirstName}\nULog: {userToGet.UserLogin}\nUDOB: {userToGet.DateOfBirth}\nUwish: {userToGet.UserWishes}\nUntn: {userToGet.NeedToNotifyUser}\nURST: {userToGet.RegistrStatus}\nUser-groups:\n{userGroups}";
 
         return await telegramBotClient.SendTextMessageAsync(
             chatId: callbackQuery.Message!.Chat.Id,
@@ -151,6 +155,199 @@ public static partial class BotActions
         return await telegramBotClient.SendTextMessageAsync(
             chatId: callbackQuery.Message!.Chat.Id,
             text: "User was succesfully <b>edited.</b>",
+            parseMode: ParseMode.Html,
+            cancellationToken: cancellationToken
+        );
+    }
+
+    public static async Task<Message> TestAddingGroupToDb(ITelegramBotClient telegramBotClient, CallbackQuery callbackQuery, IGroupsDataRepository groupsDataRepository, CancellationToken cancellationToken)
+    {   
+        await telegramBotClient.AnswerCallbackQueryAsync(
+            callbackQueryId: callbackQuery.Id,
+            cancellationToken: cancellationToken
+        );
+
+        Group groupToAdd = new Group{GroupInfo = "TestGroup", GroupName = "Test", GroupKey = "112233"};
+
+        try
+        {
+           await  groupsDataRepository.AddGroup(groupToAdd, cancellationToken);
+        }
+        catch (OverflowException)
+        {
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "User <b>already</b> exitst.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.InnerException!.Message);
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while adding group to db.");
+        }
+
+        return await telegramBotClient.SendTextMessageAsync(
+            chatId: callbackQuery.Message!.Chat.Id,
+            text: "Group was <b>Sucessfully</b> added to Db.",
+            parseMode: ParseMode.Html,
+            cancellationToken: cancellationToken
+        );
+    }
+
+    public static async Task<Message> TestDeletingGroupFromDB(ITelegramBotClient telegramBotClient, CallbackQuery callbackQuery, IGroupsDataRepository groupsDataRepository, CancellationToken cancellationToken)
+    {   
+        await telegramBotClient.AnswerCallbackQueryAsync(
+            callbackQueryId: callbackQuery.Id,
+            cancellationToken: cancellationToken
+        );
+
+        const long idToDelGroup = 6;
+
+        try
+        {
+            await groupsDataRepository.DeleteGroupById(idToDelGroup, cancellationToken);
+        }
+        catch (ArgumentNullException)
+        {
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Group <b>dont</b> exitst.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.InnerException!.Message);
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while deleting group from db.");
+        }
+
+        return await telegramBotClient.SendTextMessageAsync(
+            chatId: callbackQuery.Message!.Chat.Id,
+            text: "Group was <b>Sucessfully</b> removed from Db.",
+            parseMode: ParseMode.Html,
+            cancellationToken: cancellationToken
+        );
+    }
+
+    public static async Task<Message> TestEditingGroup(ITelegramBotClient telegramBotClient, CallbackQuery callbackQuery, IGroupsDataRepository groupsDataRepository, CancellationToken cancellationToken)
+    {
+        await telegramBotClient.AnswerCallbackQueryAsync(
+            callbackQueryId: callbackQuery.Id,
+            cancellationToken: cancellationToken
+        );
+
+        try
+        {
+            Group groupToEdit = await groupsDataRepository.GetGroupById(6, cancellationToken);
+            groupToEdit.GroupInfo = "TestChanginInfo";
+            groupToEdit.GroupName = "ChangeMyName";
+            await groupsDataRepository.EditGroup(groupToEdit, cancellationToken);
+        }
+        catch (ArgumentNullException)
+        {
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Group <b>dont</b> exitst.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.InnerException!.Message);
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while editing group from db.");
+        }
+
+        return await telegramBotClient.SendTextMessageAsync(
+            chatId: callbackQuery.Message!.Chat.Id,
+            text: "Group was <b>Sucessfully</b> edited.",
+            parseMode: ParseMode.Html,
+            cancellationToken: cancellationToken
+        );
+    }
+
+    public static async Task<Message> TestGetingGroup(ITelegramBotClient telegramBotClient, CallbackQuery callbackQuery, IGroupsDataRepository groupsDataRepository, CancellationToken cancellationToken)
+    {   
+        await telegramBotClient.AnswerCallbackQueryAsync(
+            callbackQueryId: callbackQuery.Id,
+            cancellationToken: cancellationToken
+        );
+
+        Group groupToGet;
+        try
+        {
+            groupToGet = await groupsDataRepository.GetGroupById(6, cancellationToken);
+        }
+        catch (ArgumentNullException)
+        {
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Group <b>dont</b> exitst.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.InnerException!.Message);
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while geting group from db.");
+        }
+
+        string groupUsers = string.Join("\n", groupToGet.Users.Select(x => x.UserLogin));
+        string groupInfo = $"{groupToGet.GroupId}\n{groupToGet.GroupKey}\n{groupToGet.GroupName}\n{groupToGet.GroupInfo}\n\n{groupUsers}";
+
+        return await telegramBotClient.SendTextMessageAsync(
+            chatId: callbackQuery.Message!.Chat.Id,
+            text: groupInfo,
+            parseMode: ParseMode.Html,
+            cancellationToken: cancellationToken
+        );
+    }
+
+    public static async Task<Message> TestAddGroupToUser(ITelegramBotClient telegramBotClient, CallbackQuery callbackQuery, IUsersDataRepository usersDataRepository, UserBll userBll, CancellationToken cancellationToken)
+    {   
+        await telegramBotClient.AnswerCallbackQueryAsync(
+            callbackQueryId: callbackQuery.Id,
+            cancellationToken: cancellationToken
+        );
+
+        try
+        {
+            await usersDataRepository.AddGroupToUser(userBll.UserId, 6, cancellationToken, true);
+        }
+        catch (ArgumentNullException)
+        {
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "No such user in DB");
+        }
+        catch (ArgumentException)
+        {
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Group <b>dont</b> exitst.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.InnerException!.Message);
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while adding user to group.");
+        }
+
+        return await telegramBotClient.SendTextMessageAsync(
+            chatId: callbackQuery.Message!.Chat.Id,
+            text: "User was <b>Sucсessfully</b> added to group",
+            parseMode: ParseMode.Html,
+            cancellationToken: cancellationToken
+        );
+    }
+
+    public static async Task<Message> TestDeletingGroupFromUser(ITelegramBotClient telegramBotClient, CallbackQuery callbackQuery, IUsersDataRepository usersDataRepository, UserBll userBll, CancellationToken cancellationToken)
+    {   
+        await telegramBotClient.AnswerCallbackQueryAsync(
+            callbackQueryId: callbackQuery.Id,
+            cancellationToken: cancellationToken
+        );
+
+        try
+        {
+            await usersDataRepository.RemoveGroupFromUser(userBll.UserId, 6, cancellationToken);
+        }
+        catch (ArgumentNullException)
+        {
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "No such user in DB");
+        }
+        catch (ArgumentException)
+        {
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Group <b>dont</b> exitst.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.InnerException!.Message);
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while adding user to group.");
+        }
+
+        return await telegramBotClient.SendTextMessageAsync(
+            chatId: callbackQuery.Message!.Chat.Id,
+            text: "User was <b>Sucсessfully</b> removed from group",
             parseMode: ParseMode.Html,
             cancellationToken: cancellationToken
         );

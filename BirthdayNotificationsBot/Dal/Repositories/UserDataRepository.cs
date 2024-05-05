@@ -9,7 +9,7 @@ namespace BirthdayNotificationsBot.Dal.Repositories;
 
 //Refactor?
 // Not fully shure how to inject DbContext properly and fully effectivly, e.g Unit of work.
-// Saw a lot of shit on the internet on this topic, chose the most logical one.
+// Saw a lot on the internet on this topic, chose the most logical one.
 // Shit gets real wnen you recomended to read this (https://mehdi.me/ambient-dbcontext-in-ef6/) article
 public class UserDataRepository : IUsersDataRepository
 {
@@ -18,7 +18,7 @@ public class UserDataRepository : IUsersDataRepository
     {
         using ApplicationDbContext applicationDbContext = new ApplicationDbContext();
         applicationDbContext.CheckForConnection();
-        return await applicationDbContext.Users.ToListAsync(cancellationToken);
+        return await applicationDbContext.Users.Include(x => x.Groups).ToListAsync(cancellationToken);
     }
 
     public async Task DeleteUserById(long IdToDel, CancellationToken cancellationToken)
@@ -62,7 +62,31 @@ public class UserDataRepository : IUsersDataRepository
     {
         using ApplicationDbContext applicationDbContext = new ApplicationDbContext();
         applicationDbContext.CheckForConnection();
-        User? reqUser = await applicationDbContext.Users.FirstOrDefaultAsync(x => x.UserId == userIdToGet, cancellationToken) ?? throw new ArgumentNullException("User is missing."); ;
+        User? reqUser = await applicationDbContext.Users.Include(x => x.Groups).FirstOrDefaultAsync(x => x.UserId == userIdToGet, cancellationToken) ?? throw new ArgumentNullException("User is missing.");
         return reqUser;
+    }
+
+    public async Task AddGroupToUser(long userId, long groupId, CancellationToken cancellationToken, bool isModerator = false)
+    {
+        using ApplicationDbContext applicationDbContext= new ApplicationDbContext();
+        applicationDbContext.CheckForConnection();
+
+        User? userToEdit = await applicationDbContext.Users.Include(x => x.Bounds).FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken) ?? throw new ArgumentNullException("User is missing.");
+        Group? groupToAddToUser = await applicationDbContext.Groups.FirstOrDefaultAsync(x => x.GroupId == groupId, cancellationToken) ?? throw new ArgumentException("Group is missing.");
+
+        userToEdit.Bounds.Add(new UserGroupBound{ Group = groupToAddToUser, IsModerator = isModerator});
+        await applicationDbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task RemoveGroupFromUser(long userId, long groupId, CancellationToken cancellationToken)
+    {
+        using ApplicationDbContext applicationDbContext= new ApplicationDbContext();
+        applicationDbContext.CheckForConnection();
+
+        User? userToEdit = await applicationDbContext.Users.Include(x => x.Groups).FirstOrDefaultAsync(x => x.UserId == userId) ?? throw new ArgumentNullException("User is missing.");
+        Group? groupToRemoveFromUser = await applicationDbContext.Groups.FirstOrDefaultAsync(x => x.GroupId == groupId, cancellationToken) ?? throw new ArgumentException("Group is missing.");
+
+        userToEdit.Groups.Remove(groupToRemoveFromUser);
+        await applicationDbContext.SaveChangesAsync(cancellationToken);
     }
 }

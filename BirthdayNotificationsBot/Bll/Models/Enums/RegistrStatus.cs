@@ -6,5 +6,7 @@ public enum RegistrStatus
     EditDateOfBirth,
     EditUserWishes,
     FullyRegistrated,
+    CreatingNewGroup,
+    JoiningExistingGroup,
     ErrorState
 }

@@ -1,29 +1,26 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using BirthdayNotificationsBot.Bll.Models.Enums;
+using BirthdayNotificationsBot.Dal.Models.Configurations;
+using Microsoft.EntityFrameworkCore;
 
 namespace BirthdayNotificationsBot.Dal.Models;
 
-[Table("UsersBirthdayData")]
+[EntityTypeConfiguration(typeof(UserConfiguration))]
 public class User
 {
-    [Column("user_id")]
-    public long UserId {get; init;} //immutable UserId
+    public long UserId { get; init; } //immutable UserId
 
-    [Column("chat_id")]
     public long ChatID { get; init; } //immutable ChatId (cant change from once generated for User, dont work for a group.)
 
-    [Column("telegram_user_name")]
     public string UserFirstName { get; init; } = null!;
 
-    [Column("telegram_user_login")]
     public string UserLogin { get; init; } = null!;
 
-    [Column("date_of_birth")]
-    public DateOnly DateOfBirth { get; set; } //Make it DateOnly type for a normal DB
+    public DateOnly DateOfBirth { get; set; }
 
     private string _userWishes = "N/a";
 
-    [Column("user_wishes")]
     public string UserWishes
     {
         get => _userWishes;
@@ -34,9 +31,12 @@ public class User
         }
     }
 
-    [Column("notify_user")]
     public bool NeedToNotifyUser { get; set; } = true;
 
-    [Column("registr_status")]
-    public RegistrStatus RegistrStatus{get; set;} = RegistrStatus.NewUser;
+    [EnumDataType(typeof(RegistrStatus))]
+    public RegistrStatus RegistrStatus { get; set; } = RegistrStatus.NewUser;
+
+    public List<Group> Groups {get; set;} = new List<Group>();
+
+    public List<UserGroupBound> Bounds {get; set;} = new List<UserGroupBound>();
 }

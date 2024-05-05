@@ -16,27 +16,42 @@ public static class ReplyMarkupModels
     private static readonly InlineKeyboardMarkup testDalMenu = new InlineKeyboardMarkup(new List<InlineKeyboardButton[]>(){
         new InlineKeyboardButton[2]
         {
-            InlineKeyboardButton.WithCallbackData(text: "TestAddingNew", callbackData: "/testAdd"),
-            InlineKeyboardButton.WithCallbackData(text: "TestDeleting", callbackData: "/testDel")
+            InlineKeyboardButton.WithCallbackData(text: "TestAddingUser", callbackData: "/testAdd"),
+            InlineKeyboardButton.WithCallbackData(text: "TestDeletingUser", callbackData: "/testDel")
         },
         new InlineKeyboardButton[2]
         {
-            InlineKeyboardButton.WithCallbackData(text: "TestEditing", callbackData: "/testEdit"),
+            InlineKeyboardButton.WithCallbackData(text: "TestEditingUser", callbackData: "/testEdit"),
             InlineKeyboardButton.WithCallbackData(text: "TestGettingUser", callbackData: "/testGet")
+        },
+        new InlineKeyboardButton[2]
+        {
+            InlineKeyboardButton.WithCallbackData(text: "TestAddingGroup", callbackData: "/testAddGroup"),
+            InlineKeyboardButton.WithCallbackData(text: "TestDeletingGroup", callbackData: "/tetsDelGroup")
+        },
+        new InlineKeyboardButton[2]
+        {
+            InlineKeyboardButton.WithCallbackData(text: "TestEditingGroup", callbackData: "/tetsEditGroup"),
+            InlineKeyboardButton.WithCallbackData(text: "TestGettingGroup", callbackData: "/testGetGroup")
+        },
+        new InlineKeyboardButton[2]
+        {
+            InlineKeyboardButton.WithCallbackData(text: "TestAddingGroupToUser", callbackData: "/testAddUserGroup"),
+            InlineKeyboardButton.WithCallbackData(text: "TestDeletingGroupFromUser", callbackData: "/testDelUserGroup")
         }
     }
     );
 
     private static readonly InlineKeyboardMarkup mainUserMenu = new InlineKeyboardMarkup(new List<InlineKeyboardButton[]>() {
         new InlineKeyboardButton[2] {
-            InlineKeyboardButton.WithCallbackData(text: "Войти в группу", callbackData: "/joinGroupOfUsers"),
-            InlineKeyboardButton.WithCallbackData(text: "Создать группу", callbackData: "/createNewGroup")
-        },
+            InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("1F511", System.Globalization.NumberStyles.HexNumber))} Войти в группу", callbackData: "/joinGroupOfUsersMenu"),
+            InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("1F310", System.Globalization.NumberStyles.HexNumber))} Создать группу", callbackData: "/createNewGroupInitialMenu")
+        }, 
         new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("1F465", System.Globalization.NumberStyles.HexNumber))} Управление группами.", callbackData: "/manageGroupsOfUsersMenu")},
         new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("1F464", System.Globalization.NumberStyles.HexNumber))} Управление личными данными.", callbackData: "/editPersonalDataMenu")},
         new InlineKeyboardButton[2] {
             InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("2753", System.Globalization.NumberStyles.HexNumber))} Q/A", callbackData: "/qaMenu"),
-            InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("1F4E9", System.Globalization.NumberStyles.HexNumber))} Поддержка", callbackData: "/supportMenu")
+            InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("1F198", System.Globalization.NumberStyles.HexNumber))} Поддержка", callbackData: "/supportMenu")
         }
     }
     );
@@ -72,10 +87,35 @@ public static class ReplyMarkupModels
     }
     );
 
-    private static readonly InlineKeyboardMarkup confirmChangesButton = new InlineKeyboardMarkup(new List<InlineKeyboardButton[]>() {
+    private static readonly InlineKeyboardMarkup confirmPersonalChangesButton = new InlineKeyboardMarkup(new List<InlineKeyboardButton[]>() {
         new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"Ок", callbackData: "/goBackToEditPersonalDataMenu")}
     }
     );
+
+    private static readonly InlineKeyboardMarkup confirmGroupsCoreActionsButton = new InlineKeyboardMarkup(new List<InlineKeyboardButton[]>(){
+        new InlineKeyboardButton[] {InlineKeyboardButton.WithCallbackData(text: "Ок", callbackData: "/goBackToMainUserMenu")}
+    });
+
+    private static readonly InlineKeyboardMarkup qaMenu = new InlineKeyboardMarkup(new List<InlineKeyboardButton[]>() {
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("2B05", System.Globalization.NumberStyles.HexNumber))} Назад", callbackData: "/goBackToMainUserMenu")}
+    }
+    );
+
+    private static readonly InlineKeyboardMarkup supportMenu = new InlineKeyboardMarkup(new List<InlineKeyboardButton[]>() {
+        new InlineKeyboardButton[1]{
+            InlineKeyboardButton.WithUrl(text: $"{Char.ConvertFromUtf32(int.Parse("1F4E8", System.Globalization.NumberStyles.HexNumber))} Написать в поддержку.", url: "tg://resolve?domain=GDLPP")
+        }, 
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("2B05", System.Globalization.NumberStyles.HexNumber))} Назад", callbackData: "/goBackToMainUserMenu")}
+    });
+
+    private static readonly InlineKeyboardMarkup createNewGroupMenu = new InlineKeyboardMarkup(new List<InlineKeyboardButton[]>(){
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("1F310", System.Globalization.NumberStyles.HexNumber))} Новая группа.", callbackData: "/createNewGroupPreparing")},
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("2B05", System.Globalization.NumberStyles.HexNumber))} Назад", callbackData: "/goBackToMainUserMenu")}
+    });
+
+    private static readonly InlineKeyboardMarkup joinGroupOfUsersMenu = new InlineKeyboardMarkup(new List<InlineKeyboardButton[]>() {
+        new InlineKeyboardButton[1] {InlineKeyboardButton.WithCallbackData(text: $"{Char.ConvertFromUtf32(int.Parse("2B05", System.Globalization.NumberStyles.HexNumber))} Назад", callbackData: "/goBackToMainUserMenuResetRegistrStatus")}
+    });
 
     public static InlineKeyboardMarkup GetInlineKeyboard(InlineKeyboardType inlineKeyboardType)
     {
@@ -86,8 +126,13 @@ public static class ReplyMarkupModels
             InlineKeyboardType.EditPersonalDataMenuFirst => editPersonalDataMenuFirst,
             InlineKeyboardType.EditPersonalDataMenuSecond => editPersonalDataMenuSecond,
             InlineKeyboardType.EditPersonalDataSubmenu => editPersonalDataSubmenu,
-            InlineKeyboardType.ConfirmChangesButton => confirmChangesButton,
+            InlineKeyboardType.ConfirmPersonalChangesButton => confirmPersonalChangesButton,
             InlineKeyboardType.MainUserMenu => mainUserMenu,
+            InlineKeyboardType.ConfirmGroupsCoreActionsButton => confirmGroupsCoreActionsButton,
+            InlineKeyboardType.CreateNewGroupMenu => createNewGroupMenu,
+            InlineKeyboardType.QaMenu => qaMenu,
+            InlineKeyboardType.JoinGroupOfUsersMenu => joinGroupOfUsersMenu,
+            InlineKeyboardType.SupportMenu => supportMenu,
             InlineKeyboardType.TestDALMenu => testDalMenu,
             _ => throw new ArgumentOutOfRangeException()
         };

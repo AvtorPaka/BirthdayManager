@@ -9,7 +9,8 @@ public static class UserBllExtensions
     public static User ConvertToDalModel(this UserBll user)
     {
         User userObjectToBuild = new User{UserId = user.UserId, ChatID = user.ChatId, UserFirstName = user.UserFirstName,
-        UserLogin = user.UserLogin, DateOfBirth = user.DateOfBirth, UserWishes = user.UserWishes, NeedToNotifyUser = user.NeedToNotifyUser};
+        UserLogin = user.UserLogin, DateOfBirth = user.DateOfBirth, UserWishes = user.UserWishes, NeedToNotifyUser = user.NeedToNotifyUser,
+        RegistrStatus = user.RegistrStatus};
 
         return userObjectToBuild;
     }
@@ -25,7 +26,7 @@ public static class UserBllExtensions
         return true;
     }
 
-    public static async Task<RegistrStatus> GetUserRegistrStatis(this UserBll user, IUsersDataRepository usersDataRepository, CancellationToken cancellationToken)
+    public static async Task<RegistrStatus> GetUserRegistrStatus(this UserBll user, IUsersDataRepository usersDataRepository, CancellationToken cancellationToken)
     {   
         RegistrStatus currentUserStatus;
         try

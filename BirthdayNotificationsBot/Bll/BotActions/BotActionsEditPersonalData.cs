@@ -249,7 +249,7 @@ public static partial class BotActions
             chatId: message.Chat.Id,
             text: "&#9989; Дата рождения изменена",
             parseMode: ParseMode.Html,
-            replyMarkup: ReplyMarkupModels.GetInlineKeyboard(InlineKeyboardType.ConfirmChangesButton),
+            replyMarkup: ReplyMarkupModels.GetInlineKeyboard(InlineKeyboardType.ConfirmPersonalChangesButton),
             cancellationToken: cancellationToken
         );
     }
@@ -313,7 +313,7 @@ public static partial class BotActions
             chatId: message.Chat.Id,
             text: "&#9989; Пожелания изменены",
             parseMode: ParseMode.Html,
-            replyMarkup: ReplyMarkupModels.GetInlineKeyboard(InlineKeyboardType.ConfirmChangesButton),
+            replyMarkup: ReplyMarkupModels.GetInlineKeyboard(InlineKeyboardType.ConfirmPersonalChangesButton),
             cancellationToken: cancellationToken
         );
     }

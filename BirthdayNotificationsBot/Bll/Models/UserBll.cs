@@ -1,3 +1,4 @@
+using BirthdayNotificationsBot.Bll.Models.Enums;
 using Telegram.Bot.Types;
 
 namespace BirthdayNotificationsBot.Bll.Models;
@@ -17,6 +18,8 @@ public class UserBll
     public string UserWishes {get; set;} = "N/a";
 
     public bool NeedToNotifyUser {get; set;} = true;
+
+    public RegistrStatus RegistrStatus {get; set;} = RegistrStatus.NewUser;
 
     public UserBll(Message message)
     {

@@ -7,6 +7,11 @@ public enum InlineKeyboardType
     EditPersonalDataMenuSecond,
     EditPersonalDataSubmenu,
     EnsureToDeleteAccountMenu,
-    ConfirmChangesButton,
+    ConfirmPersonalChangesButton,
+    ConfirmGroupsCoreActionsButton,
+    QaMenu,
+    SupportMenu,
+    CreateNewGroupMenu,
+    JoinGroupOfUsersMenu,
     TestDALMenu
 }

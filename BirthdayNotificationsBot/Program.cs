@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
     ContentRootPath = Directory.GetCurrentDirectory()
 });
 
-// Реализовать механику групп пользователей - создание, вход в группу по логину и ключу
+// Реализовать механику групп пользователей - создание, вход в группу по логину и ключу - 100% Done
 // Сделать управление группами - со стороны обычного пользователя и со стороны модератора.
 // Final (hope so) - сделать очередь уведомлений для каждой группы для каждого пользователя, отдельный сервис уведомлений.
 
@@ -42,6 +42,7 @@ builder.Services.AddTransient<IMessageService, MessageService>();
 builder.Services.AddTransient<ICallbackQueryService, CallbackQueryService>();
 builder.Services.AddScoped<IUpdateHandler, UpdateHandler>();
 builder.Services.AddScoped<IUsersDataRepository, UserDataRepository>();
+builder.Services.AddScoped<IGroupsDataRepository, GroupsDataRepository>();
 builder.Services.AddHostedService<ConfigureWebhook>();
 builder.Services.AddControllers().AddNewtonsoftJson();
 
@@ -52,4 +53,3 @@ app.MapBotWebhookRoute<BotController>(route: botConfigurationSection.Get<BotConf
 app.MapControllers();
 
 await app.RunAsync();
-
