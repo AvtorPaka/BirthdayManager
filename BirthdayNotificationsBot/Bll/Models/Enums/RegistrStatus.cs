@@ -8,5 +8,10 @@ public enum RegistrStatus
     FullyRegistrated,
     CreatingNewGroup,
     JoiningExistingGroup,
+    ChoosingGroupToManage,
+    ChoosingUserToGiveModeratorAccess,
+    ChoosingUserToKickOutFromTheGroup,
+    EditGroupName,
+    EditGroupAdditionalInfo,
     ErrorState
 }

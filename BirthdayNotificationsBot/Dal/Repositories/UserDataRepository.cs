@@ -55,6 +55,7 @@ public class UserDataRepository : IUsersDataRepository
         userToUpdateData.UserWishes = newUserData.UserWishes;
         userToUpdateData.NeedToNotifyUser = newUserData.NeedToNotifyUser;
         userToUpdateData.RegistrStatus = newUserData.RegistrStatus;
+        userToUpdateData.UserGroupManagmentInfo = newUserData.UserGroupManagmentInfo;
         await applicationDbContext.SaveChangesAsync(cancellationToken);
     }
 
@@ -87,6 +88,18 @@ public class UserDataRepository : IUsersDataRepository
         Group? groupToRemoveFromUser = await applicationDbContext.Groups.FirstOrDefaultAsync(x => x.GroupId == groupId, cancellationToken) ?? throw new ArgumentException("Group is missing.");
 
         userToEdit.Groups.Remove(groupToRemoveFromUser);
+        await applicationDbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task ChangeUserModeratorStatus(long userId, long groupId, CancellationToken cancellationToken, bool isModerator = true)
+    {
+        using ApplicationDbContext applicationDbContext= new ApplicationDbContext();
+
+        applicationDbContext.CheckForConnection();
+
+        User? userToEdit = await applicationDbContext.Users.Include(x => x.Bounds).FirstOrDefaultAsync(x => x.UserId == userId) ?? throw new ArgumentNullException("User is missing.");
+        UserGroupBound boundToTheGroup = userToEdit.Bounds.FirstOrDefault(x => x.GroupId == groupId) ?? throw new ArgumentException("Bound is missing");
+        boundToTheGroup.IsModerator = isModerator;
         await applicationDbContext.SaveChangesAsync(cancellationToken);
     }
 }

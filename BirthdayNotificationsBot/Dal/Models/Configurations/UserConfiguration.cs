@@ -7,6 +7,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.ToTable("UsersData");
+        builder.OwnsOne(u => u.UserGroupManagmentInfo);
         builder.HasKey(x => x.UserId);
         builder.Property(x => x.UserId).HasColumnName("user_id");
         builder.Property(x => x.ChatID).HasColumnName("chat_id");

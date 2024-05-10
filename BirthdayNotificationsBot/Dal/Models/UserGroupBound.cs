@@ -1,4 +1,3 @@
-
 using BirthdayNotificationsBot.Dal.Models.Configurations;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,5 +11,5 @@ public class UserGroupBound
     public long GroupId {get; init;}
     public Group? Group {get; set;}
 
-    public bool IsModerator {get; init;}
+    public bool IsModerator {get; set;}
 }

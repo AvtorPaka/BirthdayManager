@@ -56,6 +56,11 @@ public class MessageService : IMessageService
             string curAction when curUserRegistrStatus == RegistrStatus.JoiningExistingGroup => BotActions.BotActions.JoinGroupOfUsers(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
             string curAction when curUserRegistrStatus == RegistrStatus.NeedToFillWishes => BotActions.BotActions.FillUserWishes(_telegramBotClient, message, _usersDataRepository, currentUser, cancellationToken),
             string curAction when curUserRegistrStatus == RegistrStatus.EditDateOfBirth => BotActions.BotActions.EditUserDateOfBirth(_telegramBotClient, message, _usersDataRepository, currentUser, cancellationToken),
+            string curAction when curUserRegistrStatus == RegistrStatus.ChoosingGroupToManage => BotActions.BotActions.UserChooseGroupToEdit(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+            string curAction when curUserRegistrStatus == RegistrStatus.ChoosingUserToGiveModeratorAccess => BotActions.BotActions.GiveUserFromTheGroupModeratorAcess(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+            string curAction when curUserRegistrStatus == RegistrStatus.ChoosingUserToKickOutFromTheGroup => BotActions.BotActions.KickOutUserFromTheGroup(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+            string curAction when curUserRegistrStatus == RegistrStatus.EditGroupName => BotActions.BotActions.EditGroupNameModerAction(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+            string curAction when curUserRegistrStatus == RegistrStatus.EditGroupAdditionalInfo => BotActions.BotActions.EditGroupAdditinalInfoModerAction(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
             string curAction when curUserRegistrStatus == RegistrStatus.EditUserWishes => BotActions.BotActions.EditUserWishes(_telegramBotClient, message, _usersDataRepository, currentUser, cancellationToken),
             _ => BotActions.BotActions.VariableMessageError(_telegramBotClient, message, cancellationToken)
         };

@@ -19,4 +19,6 @@ public interface IUsersDataRepository
     public Task AddGroupToUser(long userId, long grouoId, CancellationToken cancellationToken, bool isModerator = false);
 
     public Task RemoveGroupFromUser(long userId, long groupId, CancellationToken cancellationToken);
+
+    public Task ChangeUserModeratorStatus(long userId, long groupId, CancellationToken cancellationToken, bool isModerator = true);
 }

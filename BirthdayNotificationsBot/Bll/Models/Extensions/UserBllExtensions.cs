@@ -39,4 +39,15 @@ public static class UserBllExtensions
         return currentUserStatus;
     }
 
+    public static async Task<Group> GetUsersGroupToManage(this UserBll userBll, IUsersDataRepository usersDataRepository, IGroupsDataRepository groupsDataRepository, CancellationToken cancellationToken)
+    {
+        User userToCheck = await usersDataRepository.GetUserById(userBll.UserId, cancellationToken); //может не быть юзера - ловить
+        long groupToManageId = userToCheck.UserGroupManagmentInfo!.GroupIdToEdit;
+        if (userToCheck.Bounds.FirstOrDefault(x => x.GroupId == groupToManageId) == null)
+        {
+            throw new OverflowException("User dont belong to the group");
+        }
+        return await groupsDataRepository.GetGroupById(groupToManageId, cancellationToken); //может не быть группы - ловить
+    }
+
 }

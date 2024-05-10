@@ -27,12 +27,12 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060; Пользователь не найден.\nПопробуйте <b>позже.</b>");
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; Пользователь не найден.\nПопробуйте <b>позже.</b>");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"{ex.InnerException!.Message}\nException occured while trying to get user from DB.");
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060; <b>Невозможно</b> получить личные данные.\nПопробуйте <b>позже.</b>");
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; <b>Невозможно</b> получить личные данные.\nПопробуйте <b>позже.</b>");
         }
 
         DateOnly currentUserDOB = userToGet.DateOfBirth;
@@ -85,12 +85,12 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060; Пользователь не найден.\nПопробуйте <b>позже.</b>");
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; Пользователь не найден.\nПопробуйте <b>позже.</b>");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"{ex.InnerException!.Message}\nException occured while trying to delete user from DB.");
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060; <b>Невозможно</b> удалить пользователя.\nПопробуйте <b>позже.</b>");
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; <b>Невозможно</b> удалить пользователя.\nПопробуйте <b>позже.</b>");
         }   
 
         return await telegramBotClient.EditMessageTextAsync(
@@ -117,12 +117,12 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060; Пользователь не найден.\nПопробуйте <b>позже.</b>");
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; Пользователь не найден.\nПопробуйте <b>позже.</b>");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"{ex.InnerException!.Message}\nException occured while trying to  disable user notifications.");
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060; <b>Невозможно</b> отключить уведомления.\nПопробуйте <b>позже.</b>");
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; <b>Невозможно</b> отключить уведомления.\nПопробуйте <b>позже.</b>");
         }
 
         return await telegramBotClient.EditMessageReplyMarkupAsync(
@@ -149,12 +149,12 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060; Пользователь не найден.\nПопробуйте <b>позже.</b>");
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; Пользователь не найден.\nПопробуйте <b>позже.</b>");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"{ex.InnerException!.Message}\nException occured while trying to  disable user notifications.");
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060; <b>Невозможно</b> отключить уведомления.\nПопробуйте <b>позже.</b>");
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; <b>Невозможно</b> отключить уведомления.\nПопробуйте <b>позже.</b>");
         }
 
        return await telegramBotClient.EditMessageReplyMarkupAsync(
@@ -195,12 +195,12 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060; Пользователь не найден.\nПопробуйте <b>позже.</b>");
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; Пользователь не найден.\nПопробуйте <b>позже.</b>");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"{ex.InnerException!.Message}\nException occured while trying to change user DOB.");
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060; <b>Невозможно</b> изменить дату рождения.\nПопробуйте <b>позже.</b>");
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; <b>Невозможно</b> изменить дату рождения.\nПопробуйте <b>позже.</b>");
         }
 
 
@@ -237,12 +237,12 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#10060; Пользователь не найден.\nПопробуйте <b>позже.</b>");
+            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#9940; Пользователь не найден.\nПопробуйте <b>позже.</b>");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"{ex.InnerException!.Message}\nException occured while trying to change user DOB.");
-            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#10060; <b>Невозможно</b> изменить дату рождения.\nПопробуйте <b>позже.</b>");
+            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#9940; <b>Невозможно</b> изменить дату рождения.\nПопробуйте <b>позже.</b>");
         }
 
         return await telegramBotClient.SendTextMessageAsync(
@@ -270,12 +270,12 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060; Пользователь не найден.\nПопробуйте <b>позже.</b>");
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; Пользователь не найден.\nПопробуйте <b>позже.</b>");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"{ex.InnerException!.Message}\nException occured while trying to change user DOB.");
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060; <b>Невозможно</b> изменить пожеления.\nПопробуйте <b>позже.</b>");
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; <b>Невозможно</b> изменить пожеления.\nПопробуйте <b>позже.</b>");
         }
 
 
@@ -301,12 +301,12 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#10060; Пользователь не найден.\nПопробуйте <b>позже.</b>");
+            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#9940; Пользователь не найден.\nПопробуйте <b>позже.</b>");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"{ex.InnerException!.Message}\nException occured while trying to change user DOB.");
-            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#10060; <b>Невозможно</b> изменить пожелания.\nПопробуйте <b>позже.</b>");
+            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#9940; <b>Невозможно</b> изменить пожелания.\nПопробуйте <b>позже.</b>");
         }
 
         return await telegramBotClient.SendTextMessageAsync(

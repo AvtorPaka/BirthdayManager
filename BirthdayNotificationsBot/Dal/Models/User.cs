@@ -36,6 +36,8 @@ public class User
     [EnumDataType(typeof(RegistrStatus))]
     public RegistrStatus RegistrStatus { get; set; } = RegistrStatus.NewUser;
 
+    public UserGroupManagmentInfo? UserGroupManagmentInfo {get; set;}
+
     public List<Group> Groups {get; set;} = new List<Group>();
 
     public List<UserGroupBound> Bounds {get; set;} = new List<UserGroupBound>();

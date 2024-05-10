@@ -14,9 +14,7 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
     ContentRootPath = Directory.GetCurrentDirectory()
 });
 
-// Реализовать механику групп пользователей - создание, вход в группу по логину и ключу - 100% Done
-// Сделать управление группами - со стороны обычного пользователя и со стороны модератора.
-// Final (hope so) - сделать очередь уведомлений для каждой группы для каждого пользователя, отдельный сервис уведомлений.
+// Rofls на разрабах не дают нормально удалять ReplyKeyboard :D - подумать как убрать уродство на галочках
 
 // Setup bot configuration
 if (!builder.Environment.IsProduction())

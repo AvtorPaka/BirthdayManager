@@ -47,12 +47,12 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060; Пользователь не найден.\nПопробуйте <b>позже.</b>");
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; Пользователь не найден.\nПопробуйте <b>позже.</b>");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"{ex.InnerException!.Message}\nException occured while trying create new group(Change users RegistrStatus).");
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060; <b>Невозможно</b> создать новую группу.\nПопробуйте <b>позже.</b>");
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; <b>Невозможно</b> создать новую группу.\nПопробуйте <b>позже.</b>");
         }
 
         return await telegramBotClient.EditMessageTextAsync(
@@ -91,26 +91,26 @@ public static partial class BotActions
         }
         catch (OverflowException)
         {
-            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#10060; Группа <b>уже</b> существует");
+            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#9940; Группа <b>уже</b> существует");
         }
         catch (ArgumentNullException)
         {
-            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#10060; Пользователь не найден.\nПопробуйте <b>позже.</b>");
+            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#9940; Пользователь не найден.\nПопробуйте <b>позже.</b>");
         }
         catch (ArgumentException)
         {
-            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#10060; Группа не найдена.\nПопробуйте <b>позже.</b>");
+            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#9940; Группа не найдена.\nПопробуйте <b>позже.</b>");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"{ex.Message}\nError occured while trying to parse new group data.");
-            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#10060; <b>Невозможно</b> создать группу.\nПопробуйте <b>позже.</b>");
+            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#9940; <b>Невозможно</b> создать группу.\nПопробуйте <b>позже.</b>");
         }
 
 
         return await telegramBotClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: $"&#9989; Группа создана\n<b>Индетефикатор:</b> {groupIdCreated}\n<b>Пароль:</b> {createGroupInfo[0]}\n<b>Название:</b> {createGroupInfo[1]}\n<b>Дополнительная информация:</b> {(createGroupInfo.Length >= 3 ? createGroupInfo[2] : "Нет")}",
+            text: $"&#9989; Группа создана\n<b>Индетефикатор:</b> <code>{groupIdCreated}</code>\n<b>Пароль:</b> {createGroupInfo[0]}\n<b>Название:</b> {createGroupInfo[1]}\n<b>Дополнительная информация:</b> {(createGroupInfo.Length >= 3 ? createGroupInfo[2] : "Нет")}",
             parseMode: ParseMode.Html,
             replyMarkup: ReplyMarkupModels.GetInlineKeyboard(InlineKeyboardType.ConfirmGroupsCoreActionsButton),
             cancellationToken: cancellationToken
@@ -132,12 +132,12 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060; Пользователь не найден.\nПопробуйте <b>позже.</b>");
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; Пользователь не найден.\nПопробуйте <b>позже.</b>");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"{ex.InnerException!.Message}\nException occured while trying to join new users group.");
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060; <b>Невозможно</b> войти в группу.\nПопробуйте <b>позже.</b>");
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; <b>Невозможно</b> войти в группу.\nПопробуйте <b>позже.</b>");
         }
 
         return await telegramBotClient.EditMessageTextAsync(
@@ -156,7 +156,7 @@ public static partial class BotActions
         try
         {
             groupDataToCheck = message.Text!.Split("\n", StringSplitOptions.RemoveEmptyEntries);
-            if (groupDataToCheck.Length < 2) {throw new Exception();}
+            if (groupDataToCheck.Length < 2) { throw new Exception(); }
         }
         catch (Exception ex)
         {
@@ -179,7 +179,7 @@ public static partial class BotActions
         catch (Exception ex)
         {
             Console.WriteLine($"{ex.Message}\nError occured while trying to parse new group data.");
-            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#10060; <b>Невозможно</b> войти в группу.\nПопробуйте <b>позже.</b>"); 
+            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#9940; <b>Невозможно</b> войти в группу.\nПопробуйте <b>позже.</b>");
         }
 
         if (!string.Equals(currentGroupKey, groupKeyToAddUser, StringComparison.Ordinal))
@@ -189,24 +189,32 @@ public static partial class BotActions
 
         try
         {
-            await usersDataRepository.AddGroupToUser(userBll.UserId, currentGroupId, cancellationToken);
             Dal.Models.User userToEdit = await usersDataRepository.GetUserById(userBll.UserId, cancellationToken);
+
+            if (userToEdit.Groups.FirstOrDefault(x => x.GroupId == currentGroupId) != null)
+            {
+                return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#9940; Вы <b>уже</b> состоите в этой группе.");
+            }
+
+            await usersDataRepository.AddGroupToUser(userBll.UserId, currentGroupId, cancellationToken);
             userToEdit.RegistrStatus = RegistrStatus.FullyRegistrated;
             await usersDataRepository.EditUser(userToEdit, cancellationToken);
         }
         catch (ArgumentNullException)
         {
-            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#10060; Пользователь не найден.\nПопробуйте <b>позже.</b>");
+            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#9940; Пользователь не найден.\nПопробуйте <b>позже.</b>");
         }
         catch (ArgumentException)
         {
-            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#10060; Группа c таким индетефикатором не найдена.\n<b>Проверьте</b> правильность вводимых данных или попробуйте <b>позже.</b>");
+            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#9940; Группа c таким индетефикатором не найдена.\n<b>Проверьте</b> правильность вводимых данных или попробуйте <b>позже.</b>");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"{ex.Message}\nError occured while trying to parse new group data.");
-            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#10060; <b>Невозможно</b> войти в группу.\nПопробуйте <b>позже.</b>");
+            return await VariableMessageError(telegramBotClient, message, cancellationToken, "&#9940; <b>Невозможно</b> войти в группу.\nПопробуйте <b>позже.</b>");
         }
+
+        await NotifyGroupModeratorUsersSomebodyJoined(telegramBotClient, groupsDataRepository, userBll, currentGroupId, cancellationToken);
 
         return await telegramBotClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
@@ -215,6 +223,35 @@ public static partial class BotActions
             replyMarkup: ReplyMarkupModels.GetInlineKeyboard(InlineKeyboardType.ConfirmGroupsCoreActionsButton),
             cancellationToken: cancellationToken
         );
+    }
+
+    private static async Task NotifyGroupModeratorUsersSomebodyJoined(ITelegramBotClient telegramBotClient, IGroupsDataRepository groupsDataRepository, UserBll userWhoJoined, long groupIdWhereUserJoined, CancellationToken cancellationToken)
+    {
+        try
+        {
+            Group groupWhereUserJoined = await groupsDataRepository.GetGroupById(groupIdWhereUserJoined, cancellationToken);
+            List<Dal.Models.User> moderatorUserWhoNeedToNotify = groupWhereUserJoined.Bounds.Where(x => x.IsModerator == true).Select(x => x.User).Where(x => x!.NeedToNotifyUser == true).ToList()!;
+
+            for (int i = 0; i < moderatorUserWhoNeedToNotify.Count; ++i)
+            {
+                await telegramBotClient.SendTextMessageAsync(
+                    chatId: moderatorUserWhoNeedToNotify[i].ChatID,
+                    text: $"&#128276; Новый пользователь <b>вошел</b> в вашу группу!\n<b>Пользователь:\n</b>{userWhoJoined.UserFirstName} ({userWhoJoined.UserLogin})\n<b>Группа:</b>\n{groupWhereUserJoined.GroupName} (<code>{groupWhereUserJoined.GroupId}</code>)",
+                    parseMode: ParseMode.Html,
+                    cancellationToken: cancellationToken
+                );
+
+            }
+
+        }
+        catch (ArgumentNullException)
+        {
+            Console.WriteLine($"Error occured while trying to notify moderator that somebody joined their group | Due to missing group :D.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"{ex.Message}\nError occured while trying to notify moderator that somebody joined their group.");
+        }
     }
 
     public static async Task<Message> GoBackToMainUserMenuResetRegistrStatus(ITelegramBotClient telegramBotClient, CallbackQuery callbackQuery, IUsersDataRepository usersDataRepository, UserBll userBll, CancellationToken cancellationToken)
@@ -232,12 +269,12 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060; Пользователь не найден.\nПопробуйте <b>позже.</b>");
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; Пользователь не найден.\nПопробуйте <b>позже.</b>");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"{ex.InnerException!.Message}\nException occured while trying to join new users group.");
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#10060; <b>Невозможно</b> войти в группу.\nПопробуйте <b>позже.</b>");
+            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; <b>Невозможно</b> войти в группу.\nПопробуйте <b>позже.</b>");
         }
 
         InlineKeyboardMarkup mainMenuKeyboard = ReplyMarkupModels.GetInlineKeyboard(InlineKeyboardType.MainUserMenu);

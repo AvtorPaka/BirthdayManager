@@ -13,5 +13,16 @@ public enum InlineKeyboardType
     SupportMenu,
     CreateNewGroupMenu,
     JoinGroupOfUsersMenu,
+    ManageUserGroupsCancelMenu,
+    OrdinaryUserManageUserGroupsMainMenu,
+    ModeratorUserManageUserGroupsMainMenu,
+    ShowAllGroupUsersMenu,
+    GoBackToMainUserMenu,
+    EnsureToRemoveOrdinaryUserFromTheGroupMenu,
+    ConfirmChangesOnUsersGroup,
+    EnsureToremoveModeratorUserFromTheGroupMenuFree,
+    EnsureToremoveModeratorUserFromTheGroupMenuLocked,
+    EnsureToDeleteUsersGroupModerAction,
+    EditGroupDataSubmenu,
     TestDALMenu
 }
