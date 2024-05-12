@@ -14,7 +14,8 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
     ContentRootPath = Directory.GetCurrentDirectory()
 });
 
-// Rofls на разрабах не дают нормально удалять ReplyKeyboard :D - подумать как убрать уродство на галочках
+//Нужно порефакторить дерьмо в bll
+//Добавить логер
 
 // Setup bot configuration
 if (!builder.Environment.IsProduction())
@@ -41,8 +42,14 @@ builder.Services.AddTransient<ICallbackQueryService, CallbackQueryService>();
 builder.Services.AddScoped<IUpdateHandler, UpdateHandler>();
 builder.Services.AddScoped<IUsersDataRepository, UserDataRepository>();
 builder.Services.AddScoped<IGroupsDataRepository, GroupsDataRepository>();
+builder.Services.AddScoped<INotificationsService, NotificationsService>();
+builder.Services.AddHostedService<NotificationHostedService>();
 builder.Services.AddHostedService<ConfigureWebhook>();
 builder.Services.AddControllers().AddNewtonsoftJson();
+
+builder.Services.Configure<HostOptions>(hostOptions => {
+    hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
+});
 
 //Mapping 
 using WebApplication app = builder.Build();

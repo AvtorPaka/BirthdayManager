@@ -2,6 +2,7 @@ using BirthdayNotificationsBot.Bll.BotActions.Utils;
 using BirthdayNotificationsBot.Bll.BotActions.Utils.Enums;
 using BirthdayNotificationsBot.Bll.Models;
 using BirthdayNotificationsBot.Bll.Models.Enums;
+using BirthdayNotificationsBot.Bll.Utils;
 using BirthdayNotificationsBot.Dal.Repositories.Interfaces;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -35,11 +36,7 @@ public static partial class BotActions
             return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; <b>Невозможно</b> получить личные данные.\nПопробуйте <b>позже.</b>");
         }
 
-        DateOnly currentUserDOB = userToGet.DateOfBirth;
-        string curUserBMonth = currentUserDOB.Month < 10 ? ('0' + currentUserDOB.Month.ToString()) : currentUserDOB.Month.ToString();
-        string formatedDOB = $"{currentUserDOB.Day}.{curUserBMonth}.{currentUserDOB.Year}";
-        string userPersonalData = $"<b>Личные данные:</b>\n&#128197; Дата рождения: {formatedDOB}\n&#127873; Пожелания: {userToGet.UserWishes}";
-
+        string userPersonalData = $"<b>Личные данные:</b>\n&#128197; Дата рождения: {userToGet.DateOfBirth.FormatForString()}\n&#127873; Пожелания: {userToGet.UserWishes}";
 
         InlineKeyboardType editPersonalDataType= userToGet.NeedToNotifyUser ? InlineKeyboardType.EditPersonalDataMenuFirst : InlineKeyboardType.EditPersonalDataMenuSecond;
         InlineKeyboardMarkup editPersonalDataKeyboard = ReplyMarkupModels.GetInlineKeyboard(editPersonalDataType);

@@ -4,6 +4,7 @@ using BirthdayNotificationsBot.Bll.BotActions.Utils.Enums;
 using BirthdayNotificationsBot.Bll.Models;
 using BirthdayNotificationsBot.Bll.Models.Enums;
 using BirthdayNotificationsBot.Bll.Models.Extensions;
+using BirthdayNotificationsBot.Bll.Utils;
 using BirthdayNotificationsBot.Dal.Models;
 using BirthdayNotificationsBot.Dal.Repositories;
 using BirthdayNotificationsBot.Dal.Repositories.Interfaces;
@@ -58,13 +59,19 @@ public static partial class BotActions
 
         InlineKeyboardMarkup mainMenuKeyboard = ReplyMarkupModels.GetInlineKeyboard(InlineKeyboardType.MainUserMenu);
 
-        await telegramBotClient.SendTextMessageAsync(
+        Message message1 = await telegramBotClient.SendTextMessageAsync(
            chatId: message.Chat.Id,
-           text: "&#9745;",
+           text: ".",
            parseMode: ParseMode.Html,
            replyMarkup: new ReplyKeyboardRemove(),
            cancellationToken: cancellationToken
        );
+
+        await telegramBotClient.DeleteMessageAsync(
+            chatId: message1.Chat.Id,
+            messageId: message1.MessageId,
+            cancellationToken: cancellationToken
+        );
 
         return await telegramBotClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
@@ -216,11 +223,17 @@ public static partial class BotActions
         string currentGroupDataToShowInMessage = $"{moderatorInfo}&#127760; <b>Данные группы</b>\n\n<b>Индетефикатор:</b> <code>{groupWhichUserWantToManage.GroupId}</code>\n<b>Название:</b> {groupWhichUserWantToManage.GroupName}\n<b>Пароль:</b> {groupWhichUserWantToManage.GroupKey}\n<b>Дополнительная информация:</b>\n{groupAdditionalInfo}\n<b>Количество участников:</b> {groupWhichUserWantToManage.Users.Count}";
         InlineKeyboardType keyboardToManageGroupType = isCurrentUserModeratorOfTheGroup ? InlineKeyboardType.ModeratorUserManageUserGroupsMainMenu : InlineKeyboardType.OrdinaryUserManageUserGroupsMainMenu;
 
-        await telegramBotClient.SendTextMessageAsync(
+        Message message1 = await telegramBotClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: "&#9745;",
+            text: ".",
             parseMode: ParseMode.Html,
             replyMarkup: new ReplyKeyboardRemove(),
+            cancellationToken: cancellationToken
+        );
+
+        await telegramBotClient.DeleteMessageAsync(
+            chatId: message1.Chat.Id,
+            messageId: message1.MessageId,
             cancellationToken: cancellationToken
         );
 
@@ -309,23 +322,17 @@ public static partial class BotActions
             return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "&#9940; <b>Невозможно</b> получить данные группы.\nПопробуйте <b>позже.</b>");
         }
 
-        long todaysDayNumber = DateOnly.FromDateTime(DateTime.Now).DayNumber;
-        List<Dal.Models.User> usersOfTheGroup = groupToManageByUser.Users.OrderBy(x => x.DateOfBirth.DayNumber - todaysDayNumber).ToList();
+        DateOnly todaysDate = DateOnly.FromDateTime(DateTime.Now);
+        List<Dal.Models.User> usersOfTheGroup = groupToManageByUser.Users.OrderBy(x => x.DateOfBirth.DifferenceInDays(todaysDate)).ToList();
 
-        DateOnly userWhoManagesDOB = userWhoManages.DateOfBirth;
-        string userWhoManagesBMonth = userWhoManagesDOB.Month < 10 ? ('0' + userWhoManagesDOB.Month.ToString()) : userWhoManagesDOB.Month.ToString();
-        string userWhoManagesFormatedDOB = $"{userWhoManagesDOB.Day}.{userWhoManagesBMonth}.{userWhoManagesDOB.Year}";
-        StringBuilder infoAboutAllUsersInGroup = new StringBuilder($"&#128100; <b>Вы</b>\n<b>Пользователь:</b> {userWhoManages.UserFirstName} ({userWhoManages.UserLogin})\n&#128197; Дата рождения: {userWhoManagesFormatedDOB}\n&#127873; Пожелания: {userWhoManages.UserWishes}\n\n");
+        StringBuilder infoAboutAllUsersInGroup = new StringBuilder($"&#128100; <b>Вы</b>\n<b>Пользователь:</b> {userWhoManages.UserFirstName} ({userWhoManages.UserLogin})\n&#128197; Дата рождения: {userWhoManages.DateOfBirth.FormatForString()}\n&#127873; Пожелания: {userWhoManages.UserWishes}\n\n");
 
         int cntUsersExceptCaller = 1;
         for (int i = 0; i < usersOfTheGroup.Count; ++i)
         {
             Dal.Models.User curUser = usersOfTheGroup[i];
             if (curUser.UserId == userBll.UserId) { continue; }
-            DateOnly currentUserDOB = curUser.DateOfBirth;
-            string curUserBMonth = currentUserDOB.Month < 10 ? ('0' + currentUserDOB.Month.ToString()) : currentUserDOB.Month.ToString();
-            string formatedDOB = $"{currentUserDOB.Day}.{curUserBMonth}.{currentUserDOB.Year}";
-            string curInfoString = $"&#128100; <b>{cntUsersExceptCaller++}.</b>\n<b>Пользователь:</b> {curUser.UserFirstName} ({curUser.UserLogin})\n&#128197; Дата рождения: {formatedDOB}\n&#127873; Пожелания: {curUser.UserWishes}";
+            string curInfoString = $"&#128100; <b>{cntUsersExceptCaller++}.</b>\n<b>Пользователь:</b> {curUser.UserFirstName} ({curUser.UserLogin})\n&#128197; Дата рождения: {curUser.DateOfBirth.FormatForString()}\n&#127873; Пожелания: {curUser.UserWishes}";
             if (i != usersOfTheGroup.Count - 1) { curInfoString += "\n\n"; }
             infoAboutAllUsersInGroup.Append(curInfoString);
         }
@@ -557,12 +564,18 @@ public static partial class BotActions
 
         await NotifyUserAboutActionInTheGroup(telegramBotClient, userWhoWasGivenAcess, $"&#128276; Вы стали <b>администратором</b> в группе {groupWhichUserWantToManage.GroupName} (<code>{groupWhichUserWantToManage.GroupId}</code>)", groupWhichUserWantToManage, cancellationToken);
 
-        await telegramBotClient.SendTextMessageAsync(
+        Message message1 = await telegramBotClient.SendTextMessageAsync(
            chatId: message.Chat.Id,
-           text: "&#9745;",
+           text: ".",
            parseMode: ParseMode.Html,
            replyMarkup: new ReplyKeyboardRemove(),
            cancellationToken: cancellationToken
+        );
+
+        await telegramBotClient.DeleteMessageAsync(
+            chatId: message1.Chat.Id,
+            messageId: message1.MessageId,
+            cancellationToken: cancellationToken
         );
 
         return await telegramBotClient.SendTextMessageAsync(
@@ -613,12 +626,18 @@ public static partial class BotActions
         string currentGroupDataToShowInMessage = $"{moderatorInfo}&#127760; <b>Данные группы</b>\n\n<b>Индетефикатор:</b> <code>{groupWhichUserWantToManage.GroupId}</code>\n<b>Название:</b> {groupWhichUserWantToManage.GroupName}\n<b>Пароль:</b> {groupWhichUserWantToManage.GroupKey}\n<b>Дополнительная информация:</b>\n{groupAdditionalInfo}\n<b>Количество участников:</b> {groupWhichUserWantToManage.Users.Count}";
         InlineKeyboardType keyboardToManageGroupType = isCurrentUserModeratorOfTheGroup ? InlineKeyboardType.ModeratorUserManageUserGroupsMainMenu : InlineKeyboardType.OrdinaryUserManageUserGroupsMainMenu;
 
-        await telegramBotClient.SendTextMessageAsync(
+        Message message1 = await telegramBotClient.SendTextMessageAsync(
            chatId: message.Chat.Id,
-           text: "&#9745;",
+           text: ".",
            parseMode: ParseMode.Html,
            replyMarkup: new ReplyKeyboardRemove(),
            cancellationToken: cancellationToken
+        );
+
+        await telegramBotClient.DeleteMessageAsync(
+            chatId: message1.Chat.Id,
+            messageId: message1.MessageId,
+            cancellationToken: cancellationToken
         );
 
         return await telegramBotClient.SendTextMessageAsync(
@@ -770,12 +789,18 @@ public static partial class BotActions
 
         await NotifyUserAboutActionInTheGroup(telegramBotClient, userWhoGonnaBeFucked, $"&#128276; Вы были <b>удалены</b> из группы {groupWhichUserWantToManage.GroupName} (<code>{groupWhichUserWantToManage.GroupId}</code>)", groupWhichUserWantToManage, cancellationToken);
 
-        await telegramBotClient.SendTextMessageAsync(
+        Message message1 = await telegramBotClient.SendTextMessageAsync(
            chatId: message.Chat.Id,
-           text: "&#9745;",
+           text: ".",
            parseMode: ParseMode.Html,
            replyMarkup: new ReplyKeyboardRemove(),
            cancellationToken: cancellationToken
+        );
+
+        await telegramBotClient.DeleteMessageAsync(
+            chatId: message1.Chat.Id,
+            messageId: message1.MessageId,
+            cancellationToken: cancellationToken
         );
 
         return await telegramBotClient.SendTextMessageAsync(
