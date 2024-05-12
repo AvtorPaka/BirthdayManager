@@ -13,7 +13,6 @@ namespace BirthdayNotificationsBot.Dal.Repositories;
 // Shit gets real wnen you recomended to read this (https://mehdi.me/ambient-dbcontext-in-ef6/) article
 public class UserDataRepository : IUsersDataRepository
 {
-    // !!! REMEMBER TO HANDLE EXCEPTIONS VIA CALLING METHODS
     public async Task<List<User>> GetAllUsers(CancellationToken cancellationToken)
     {
         using ApplicationDbContext applicationDbContext = new ApplicationDbContext();

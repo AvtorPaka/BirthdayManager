@@ -35,12 +35,12 @@ public class NotificationsService : INotificationsService
         }
         catch (NotImplementedException)
         {   
-            _logger.LogInformation(">>Error occured while trying to get groups data for notifications - lost connection to DB");
+            _logger.LogInformation(">>>Error occured while trying to get groups data for notifications - lost connection to DB | Date : {curDate}", DateTime.Now);
             return false;
         }
         catch (Exception ex)
         {   
-             _logger.LogInformation(">>{exMessge}\nError occured while trying to get groups data for notifications", ex.Message);
+             _logger.LogInformation(">>>{exMessge}\nError occured while trying to get groups data for notifications | Date : {curDate}", ex.Message, DateTime.Now);
             return false;
         }
 
@@ -55,7 +55,7 @@ public class NotificationsService : INotificationsService
             }
         }
 
-        _logger.LogInformation(">>>All user's data successfully claimed.");
+        _logger.LogInformation(">>All user's data successfully claimed | Date : {curDate}", DateTime.Now);
         return true;
     }
 
@@ -89,12 +89,14 @@ public class NotificationsService : INotificationsService
                     cancellationToken: cancellationToken
                 );
 
-                 _logger.LogInformation(">>Notification about user (Id: {UserId}) send to user (Id: {User2Id} | ChatId: {UserChatId})", userWhoHasBirthday.UserId, userToNotiy.UserId, userToNotiy.ChatID);
+                 _logger.LogInformation(">>Notification about user (Id: {UserId}) send to user (Id: {User2Id} | ChatId: {UserChatId}) | Date : {curDate}",
+                  userWhoHasBirthday.UserId, userToNotiy.UserId, userToNotiy.ChatID, DateTime.Now);
             }
         }
         catch (Exception ex)
         {
-            _logger.LogInformation(">>{exMessage}\n>>Exception occured while trying to send notification to user:\nUserId : {} | ChatId : {}", ex.Message, userToNotiy.UserId, userToNotiy.ChatID);
+            _logger.LogInformation(">>>{exMessage}\n>>>Exception occured while trying to send notification to user:\nUserId : {User2Id} | ChatId : {UserChatId} | Date: {curDate}",
+             ex.Message, userToNotiy.UserId, userToNotiy.ChatID, DateTime.Now);
         }
     }
 
@@ -126,6 +128,6 @@ public class NotificationsService : INotificationsService
             }
         }
 
-        _logger.LogInformation(">>All user's notified!");
+        _logger.LogInformation(">>All user's notified. | Date : {curDate}", DateTime.Now);
     }
 }

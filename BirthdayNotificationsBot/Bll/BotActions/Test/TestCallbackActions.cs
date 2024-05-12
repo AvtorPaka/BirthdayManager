@@ -1,3 +1,4 @@
+using BirthdayNotificationsBot.Bll.BotActions.CallbackActions;
 using BirthdayNotificationsBot.Bll.BotActions.Utils;
 using BirthdayNotificationsBot.Bll.BotActions.Utils.Enums;
 using BirthdayNotificationsBot.Bll.Models;
@@ -9,24 +10,11 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace BirthdayNotificationsBot.Bll.BotActions;
+namespace BirthdayNotificationsBot.Bll.BotActions.Test;
 
-//Accesable only from creators telegram account(me), users dont even have a change to know about 
-public static partial class BotActions
+//Accesable only from creators telegram account(me), users dont even have a chance to know about this
+public static class TestCallbackActions
 {
-
-    public static async Task<Message> TestDalMenuShow(ITelegramBotClient telegramBotClient, Message message, CancellationToken cancellationToken)
-    {
-        InlineKeyboardMarkup testDalMerkup = ReplyMarkupModels.GetInlineKeyboard(InlineKeyboardType.TestDALMenu);
-
-        return await telegramBotClient.SendTextMessageAsync(
-            chatId: message.Chat.Id,
-            text: "Choose dal unit to test",
-            replyMarkup: testDalMerkup,
-            cancellationToken: cancellationToken
-        );
-    }
-
     public static async Task<Message> TestAddingUserToDb(ITelegramBotClient telegramBotClient, CallbackQuery callbackQuery, IUsersDataRepository usersDataRepository, CancellationToken cancellationToken)
     {
         await telegramBotClient.AnswerCallbackQueryAsync(
@@ -46,12 +34,12 @@ public static partial class BotActions
         }
         catch (OverflowException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "User <b>already</b> exitst.");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "User <b>already</b> exitst.");
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.InnerException!.Message);
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while adding user to db.");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while adding user to db.");
         }
 
         return await telegramBotClient.SendTextMessageAsync(
@@ -77,12 +65,12 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "No such a user in DB.");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "No such a user in DB.");
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.InnerException!.Message);
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while removing user from db.");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while removing user from db.");
         }
 
         return await telegramBotClient.SendTextMessageAsync(
@@ -108,12 +96,12 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "No such user in DB");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "No such user in DB");
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.InnerException!.Message);
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while getting user from db.");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while getting user from db.");
         }
 
 
@@ -144,12 +132,12 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "No such user in DB");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "No such user in DB");
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.InnerException!.Message);
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while getting user from db.");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while getting user from db.");
         }
 
         return await telegramBotClient.SendTextMessageAsync(
@@ -175,12 +163,12 @@ public static partial class BotActions
         }
         catch (OverflowException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "User <b>already</b> exitst.");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "User <b>already</b> exitst.");
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.InnerException!.Message);
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while adding group to db.");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while adding group to db.");
         }
 
         return await telegramBotClient.SendTextMessageAsync(
@@ -206,12 +194,12 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Group <b>dont</b> exitst.");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Group <b>dont</b> exitst.");
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.InnerException!.Message);
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while deleting group from db.");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while deleting group from db.");
         }
 
         return await telegramBotClient.SendTextMessageAsync(
@@ -238,12 +226,12 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Group <b>dont</b> exitst.");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Group <b>dont</b> exitst.");
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.InnerException!.Message);
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while editing group from db.");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while editing group from db.");
         }
 
         return await telegramBotClient.SendTextMessageAsync(
@@ -268,12 +256,12 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Group <b>dont</b> exitst.");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Group <b>dont</b> exitst.");
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.InnerException!.Message);
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while geting group from db.");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while geting group from db.");
         }
 
         string groupUsers = string.Join("\n", groupToGet.Users.Select(x => x.UserLogin));
@@ -300,16 +288,16 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "No such user in DB");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "No such user in DB");
         }
         catch (ArgumentException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Group <b>dont</b> exitst.");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Group <b>dont</b> exitst.");
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.InnerException!.Message);
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while adding user to group.");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while adding user to group.");
         }
 
         return await telegramBotClient.SendTextMessageAsync(
@@ -333,16 +321,16 @@ public static partial class BotActions
         }
         catch (ArgumentNullException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "No such user in DB");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "No such user in DB");
         }
         catch (ArgumentException)
         {
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Group <b>dont</b> exitst.");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Group <b>dont</b> exitst.");
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.InnerException!.Message);
-            return await VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while adding user to group.");
+            return await CoreCallbackActions.VariableCallbackError(telegramBotClient, callbackQuery, cancellationToken, "Something went wrong while adding user to group.");
         }
 
         return await telegramBotClient.SendTextMessageAsync(

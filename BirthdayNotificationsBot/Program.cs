@@ -7,18 +7,16 @@ using BirthdayNotificationsBot.Controllers;
 using Telegram.Bot.Services;
 using BirthdayNotificationsBot.Dal.Repositories.Interfaces;
 using BirthdayNotificationsBot.Dal.Repositories;
+using BirthdayNotificationsBot.Logging;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
-    EnvironmentName = Environments.Development,
+    EnvironmentName = Environments.Production,
     ContentRootPath = Directory.GetCurrentDirectory()
 });
 
-//Нужно порефакторить дерьмо в bll
-//Добавить логер
-
 // Setup bot configuration
-if (!builder.Environment.IsProduction())
+if (builder.Environment.IsProduction())
 {
     builder.Configuration.AddJsonFile("appsettings.Production.json", optional: true, reloadOnChange: true);
 }
@@ -34,22 +32,27 @@ builder.Services.AddHttpClient("TelegramBotClient")
                     return new TelegramBotClient(new TelegramBotClientOptions(botConfig.BotToken), httpClient);
                 });
 
-//TODO Setup Logger
+//Setup Logger
+
+builder.Logging.AddProvider(new AppLoggerProvider(builder.Configuration.GetSection("Logging:LogDirectory:TelegramBot").Value!));
 
 // Setup services
 builder.Services.AddTransient<IMessageService, MessageService>();
 builder.Services.AddTransient<ICallbackQueryService, CallbackQueryService>();
 builder.Services.AddScoped<IUpdateHandler, UpdateHandler>();
+builder.Services.AddHostedService<ConfigureWebhook>();
+
 builder.Services.AddScoped<IUsersDataRepository, UserDataRepository>();
 builder.Services.AddScoped<IGroupsDataRepository, GroupsDataRepository>();
+
 builder.Services.AddScoped<INotificationsService, NotificationsService>();
 builder.Services.AddHostedService<NotificationHostedService>();
-builder.Services.AddHostedService<ConfigureWebhook>();
-builder.Services.AddControllers().AddNewtonsoftJson();
 
 builder.Services.Configure<HostOptions>(hostOptions => {
     hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
 });
+
+builder.Services.AddControllers().AddNewtonsoftJson();
 
 //Mapping 
 using WebApplication app = builder.Build();

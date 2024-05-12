@@ -14,7 +14,7 @@ public class NotificationHostedService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {   
-        _logger.LogInformation(">>Notifications Host Service running.");
+        _logger.LogInformation(">>Notifications Host Service running. | Date : {curDate}", DateTime.Now);
         
         await NotifyUsers(stoppingToken);
 
@@ -28,18 +28,18 @@ public class NotificationHostedService : BackgroundService
         }
         catch (OperationCanceledException)
         {
-            _logger.LogInformation(">>Notification Host Service is stopping.");
+            _logger.LogInformation(">>Notification Host Service is stopping | Date : {curDate}", DateTime.Now);
         }
     }
 
     private async Task NotifyUsers(CancellationToken cancellationToken)
     {
-        _logger.LogInformation(">>Notifications Service start working.");
+        _logger.LogInformation(">>Notifications Service start working | Date : {curDate}", DateTime.Now);
 
         using var scope = _serviceProvider.CreateScope();
         INotificationsService notificationsService = scope.ServiceProvider.GetRequiredService<INotificationsService>();
         await notificationsService.NotifyUsersAboutBirthdays(cancellationToken);
 
-        _logger.LogInformation(">>Notifications Service stopped working.");
+        _logger.LogInformation(">>Notifications Service stopped working | Date : {curDate}", DateTime.Now);
     }
 }

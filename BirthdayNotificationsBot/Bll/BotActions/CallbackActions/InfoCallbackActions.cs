@@ -5,9 +5,8 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace BirthdayNotificationsBot.Bll.BotActions;
-
-public static partial class BotActions
+namespace BirthdayNotificationsBot.Bll.BotActions.CallbackActions;
+public static class InfoCallbackActions
 {
     public static async Task<Message> QaMenu(ITelegramBotClient telegramBotClient, CallbackQuery callbackQuery, CancellationToken cancellationToken)
     {

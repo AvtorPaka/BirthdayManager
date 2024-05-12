@@ -1,8 +1,8 @@
+using BirthdayNotificationsBot.Bll.BotActions.CallbackActions;
+using BirthdayNotificationsBot.Bll.BotActions.Test;
 using BirthdayNotificationsBot.Bll.Models;
 using BirthdayNotificationsBot.Bll.Services.Interfaces;
-using BirthdayNotificationsBot.Dal.Context;
 using BirthdayNotificationsBot.Dal.Repositories.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -31,49 +31,66 @@ public class CallbackQueryService : ICallbackQueryService
 
         Task<Message> action = callbackQuery.Data switch
         {   
-            "/editGroupNameModerActionPrepare" => BotActions.BotActions.EditGroupNamePreparation(_telegramBotClient , callbackQuery, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
-            "/editGroupAdditionalInfoModerActionPerpare" => BotActions.BotActions.EditGroupAdditionalInfoPreparation(_telegramBotClient , callbackQuery, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
-            "/editGroupDataModeratorActionSubmenu" => BotActions.BotActions.EditGroupDataSubMenu(_telegramBotClient, callbackQuery, cancellationToken),
-            "/deleteGroupOfUsersModeratorAction" => BotActions.BotActions.DeleteGroupOfUsersModeratorAction(_telegramBotClient, callbackQuery, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
-            "/deleteGroupOfUsersModeratorActionMenu" => BotActions.BotActions.EnsureToDeleteGroupOfUsersMenu(_telegramBotClient, callbackQuery, cancellationToken),
-            "/removeModeratorUserFromTheGroupMenu" => BotActions.BotActions.RemoveModeratorUserFromTheGroupMenu(_telegramBotClient, callbackQuery,_usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
-            "/kickOutUserFromTheGroupMenu" => BotActions.BotActions.KickOutUserFromTheGroupMenu(_telegramBotClient, callbackQuery, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
-            "/giveUserFromTheGroupModeratorAcess" => BotActions.BotActions.GiveUserFromTheGroupModeratorAccessMenu(_telegramBotClient, callbackQuery, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
-            "/removeUserFromTheGroup" => BotActions.BotActions.RemoveUserFromTheGroup(_telegramBotClient, callbackQuery, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
-            "/removeOrdinaryUserFromTheGroupMenu" => BotActions.BotActions.RemoveOrdinaryUserFromTheGroupMenu(_telegramBotClient, callbackQuery, cancellationToken),
-            "/showAllGroupUsers" => BotActions.BotActions.ShowAllGroupUsersInfoMenu(_telegramBotClient, callbackQuery, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
-            "/goBackToUserGroupManageMenu" => BotActions.BotActions.GoBackToUserGroupManageMenu(_telegramBotClient, callbackQuery, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
-            "/manageUserGroupsInitialMenu" => BotActions.BotActions.ManageUserGroupsInitialMenu(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
-            "/joinGroupOfUsersMenu" => BotActions.BotActions.JoinGroupOfUsersMenu(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
-            "/createNewGroupInitialMenu" => BotActions.BotActions.CreateNewGroupInitialMenu(_telegramBotClient, callbackQuery, cancellationToken),
-            "/createNewGroupPreparing" => BotActions.BotActions.CreateNewGroupPreparaion(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
-            "/supportMenu" => BotActions.BotActions.SupportMenu(_telegramBotClient, callbackQuery, cancellationToken),
-            "/qaMenu" => BotActions.BotActions.QaMenu(_telegramBotClient, callbackQuery, cancellationToken),
-            "/editUserWishesMenu" => BotActions.BotActions.EditUserWishesMenu(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
-            "/editUserDateOfBirthMenu" => BotActions.BotActions.EditUserDateOfBirthMenu(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
-            "/editPersonalDataSubmenu" => BotActions.BotActions.EditUserDataSubMenu(_telegramBotClient, callbackQuery, cancellationToken),
-            "/disableAllNotifiactions" => BotActions.BotActions.DisableAllNotifications(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
-            "/enableAllNotifiactions" => BotActions.BotActions.EnableAllNotifications(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
-            "/deleteAccountFromAppMenu" => BotActions.BotActions.EnsureToDeleteAccountMenu(_telegramBotClient, callbackQuery, cancellationToken),
-            "/deleteAccountFromApp" => BotActions.BotActions.DeleteAccountFromTheApp(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
-            "/registrNewUser" => BotActions.BotActions.RegistrNewUser(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
-            "/goBackToEditPersonalDataMenu" => BotActions.BotActions.EditPersonalDataMenu(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
-            "/editPersonalDataMenu" => BotActions.BotActions.EditPersonalDataMenu(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
-            "/goBackToMainUserMenuResetRegistrStatus" => BotActions.BotActions.GoBackToMainUserMenuResetRegistrStatus(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
-            "/goBackToMainUserMenu" => BotActions.BotActions.GoBackToMainUserMenu(_telegramBotClient, callbackQuery, cancellationToken),
+            //Core callback actions
+            "/goBackToMainUserMenu" => CoreCallbackActions.GoBackToMainUserMenu(_telegramBotClient, callbackQuery, cancellationToken),
+
+            //Manage groups callback actions
+            "/deleteGroupOfUsersModeratorAction" => ManageGroupsCallbackActions.DeleteGroupOfUsersModeratorAction(_telegramBotClient, callbackQuery, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+            "/showAllGroupUsers" => ManageGroupsCallbackActions.ShowAllGroupUsersInfoMenu(_telegramBotClient, callbackQuery, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+            "/removeUserFromTheGroup" => ManageGroupsCallbackActions.RemoveUserFromTheGroup(_telegramBotClient, callbackQuery, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+
+            //Manage groups callback menus
+            "/editGroupNameModerActionPrepare" => ManageGroupsCallbackMenus.EditGroupNamePreparation(_telegramBotClient , callbackQuery, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+            "/editGroupAdditionalInfoModerActionPerpare" => ManageGroupsCallbackMenus.EditGroupAdditionalInfoPreparation(_telegramBotClient , callbackQuery, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+            "/editGroupDataModeratorActionSubmenu" => ManageGroupsCallbackMenus.EditGroupDataSubMenu(_telegramBotClient, callbackQuery, cancellationToken),
+            "/deleteGroupOfUsersModeratorActionMenu" => ManageGroupsCallbackMenus.EnsureToDeleteGroupOfUsersMenu(_telegramBotClient, callbackQuery, cancellationToken),
+            "/removeModeratorUserFromTheGroupMenu" => ManageGroupsCallbackMenus.RemoveModeratorUserFromTheGroupMenu(_telegramBotClient, callbackQuery,_usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+            "/manageUserGroupsInitialMenu" => ManageGroupsCallbackMenus.ManageUserGroupsInitialMenu(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+            "/removeOrdinaryUserFromTheGroupMenu" => ManageGroupsCallbackMenus.RemoveOrdinaryUserFromTheGroupMenu(_telegramBotClient, callbackQuery, cancellationToken),
+            "/goBackToUserGroupManageMenu" => ManageGroupsCallbackMenus.GoBackToUserGroupManageMenu(_telegramBotClient, callbackQuery, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+            "/kickOutUserFromTheGroupMenu" => ManageGroupsCallbackMenus.KickOutUserFromTheGroupMenu(_telegramBotClient, callbackQuery, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+            "/giveUserFromTheGroupModeratorAcess" => ManageGroupsCallbackMenus.GiveUserFromTheGroupModeratorAccessMenu(_telegramBotClient, callbackQuery, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+
+            //Core group callback menus
+            "/goBackToMainUserMenuResetRegistrStatus" => GroupCoreCallbackMenus.GoBackToMainUserMenuResetRegistrStatus(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+            "/joinGroupOfUsersMenu" => GroupCoreCallbackMenus.JoinGroupOfUsersMenu(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+            "/createNewGroupInitialMenu" => GroupCoreCallbackMenus.CreateNewGroupInitialMenu(_telegramBotClient, callbackQuery, cancellationToken),
+            "/createNewGroupPreparing" => GroupCoreCallbackMenus.CreateNewGroupPreparaion(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+
+            //Edit personal data actions
+            "/disableAllNotifiactions" => PersonalDataCallbackActions.DisableAllNotifications(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+            "/enableAllNotifiactions" => PersonalDataCallbackActions.EnableAllNotifications(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+            "/deleteAccountFromApp" => PersonalDataCallbackActions.DeleteAccountFromTheApp(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+
+            //Edit personal data menus
+            "/deleteAccountFromAppMenu" => PersonalDataCallbackMenus.EnsureToDeleteAccountMenu(_telegramBotClient, callbackQuery, cancellationToken),
+            "/goBackToEditPersonalDataMenu" => PersonalDataCallbackMenus.EditPersonalDataMenu(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+            "/editPersonalDataMenu" => PersonalDataCallbackMenus.EditPersonalDataMenu(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+            "/editUserWishesMenu" => PersonalDataCallbackMenus.EditUserWishesMenu(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+            "/editUserDateOfBirthMenu" => PersonalDataCallbackMenus.EditUserDateOfBirthMenu(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+            "/editPersonalDataSubmenu" => PersonalDataCallbackMenus.EditUserDataSubMenu(_telegramBotClient, callbackQuery, cancellationToken),
+
+            //Registr
+            "/registrNewUser" => RegistrCallBackActions.RegistrNewUser(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+
+            //Info
+            "/supportMenu" => InfoCallbackActions.SupportMenu(_telegramBotClient, callbackQuery, cancellationToken),
+            "/qaMenu" => InfoCallbackActions.QaMenu(_telegramBotClient, callbackQuery, cancellationToken),
 
             //Test units - hiden from users
-            "/testDelUserGroup" => BotActions.BotActions.TestDeletingGroupFromUser(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
-            "/testAddUserGroup" => BotActions.BotActions.TestAddGroupToUser(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),  
-            "/tetsDelGroup" => BotActions.BotActions.TestDeletingGroupFromDB(_telegramBotClient, callbackQuery, _groupsDataRepository, cancellationToken),
-            "/tetsEditGroup" => BotActions.BotActions.TestEditingGroup(_telegramBotClient, callbackQuery, _groupsDataRepository, cancellationToken),
-            "/testGetGroup" => BotActions.BotActions.TestGetingGroup(_telegramBotClient, callbackQuery, _groupsDataRepository, cancellationToken),
-            "/testAddGroup" => BotActions.BotActions.TestAddingGroupToDb(_telegramBotClient, callbackQuery, _groupsDataRepository, cancellationToken),
-            "/testAdd" => BotActions.BotActions.TestAddingUserToDb(_telegramBotClient, callbackQuery, _usersDataRepository, cancellationToken),
-            "/testDel" => BotActions.BotActions.TestDelitingUser(_telegramBotClient, callbackQuery, _usersDataRepository, callbackQuery.From.Id ,cancellationToken),
-            "/testEdit" => BotActions.BotActions.TestEditingUser(_telegramBotClient, callbackQuery, _usersDataRepository, callbackQuery.From.Id, cancellationToken),
-            "/testGet" => BotActions.BotActions.TestGettingUser(_telegramBotClient, callbackQuery, _usersDataRepository, callbackQuery.From.Id, cancellationToken),
-            _ => BotActions.BotActions.VariableCallbackError(_telegramBotClient, callbackQuery, cancellationToken, errorMessage: "Callback not found")
+            "/testDelUserGroup" => TestCallbackActions.TestDeletingGroupFromUser(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),
+            "/testAddUserGroup" => TestCallbackActions.TestAddGroupToUser(_telegramBotClient, callbackQuery, _usersDataRepository, currentUser, cancellationToken),  
+            "/tetsDelGroup" => TestCallbackActions.TestDeletingGroupFromDB(_telegramBotClient, callbackQuery, _groupsDataRepository, cancellationToken),
+            "/tetsEditGroup" => TestCallbackActions.TestEditingGroup(_telegramBotClient, callbackQuery, _groupsDataRepository, cancellationToken),
+            "/testGetGroup" => TestCallbackActions.TestGetingGroup(_telegramBotClient, callbackQuery, _groupsDataRepository, cancellationToken),
+            "/testAddGroup" => TestCallbackActions.TestAddingGroupToDb(_telegramBotClient, callbackQuery, _groupsDataRepository, cancellationToken),
+            "/testAdd" => TestCallbackActions.TestAddingUserToDb(_telegramBotClient, callbackQuery, _usersDataRepository, cancellationToken),
+            "/testDel" => TestCallbackActions.TestDelitingUser(_telegramBotClient, callbackQuery, _usersDataRepository, callbackQuery.From.Id ,cancellationToken),
+            "/testEdit" => TestCallbackActions.TestEditingUser(_telegramBotClient, callbackQuery, _usersDataRepository, callbackQuery.From.Id, cancellationToken),
+            "/testGet" => TestCallbackActions.TestGettingUser(_telegramBotClient, callbackQuery, _usersDataRepository, callbackQuery.From.Id, cancellationToken),
+
+            //Unknow callback
+            _ => CoreCallbackActions.VariableCallbackError(_telegramBotClient, callbackQuery, cancellationToken, errorMessage: "Callback not found")
         };
 
         Message sentMessage = await action;

@@ -1,3 +1,5 @@
+using BirthdayNotificationsBot.Bll.BotActions.MessageActions;
+using BirthdayNotificationsBot.Bll.BotActions.Test;
 using BirthdayNotificationsBot.Bll.Models;
 using BirthdayNotificationsBot.Bll.Models.Enums;
 using BirthdayNotificationsBot.Bll.Models.Extensions;
@@ -32,7 +34,7 @@ public class MessageService : IMessageService
         Task messageHandler = message.Type switch
         {
             MessageType.Text => BotOnMessageTextReceived(message, cancellationToken),
-            _ => BotActions.BotActions.VariableMessageError(_telegramBotClient, message, cancellationToken)
+            _ => CoreMessageActions.VariableMessageError(_telegramBotClient, message, cancellationToken)
         };
 
         await messageHandler;
@@ -46,23 +48,38 @@ public class MessageService : IMessageService
 
         Task<Message> action = message.Text switch
         {   
-            string curAction when !isUserRegistered => BotActions.BotActions.FirstTimeText(_telegramBotClient, message, cancellationToken),
-            string curAction when curAction == "/test" && (message.From!.Id == 626787041)  => BotActions.BotActions.TestDalMenuShow(_telegramBotClient, message, cancellationToken),
-            string curAction when curAction == "/start" && isUserRegistered && curUserRegistrStatus == RegistrStatus.NewUser => BotActions.BotActions.VariableMessageError(_telegramBotClient, message, cancellationToken, "Cперва <b>необходимо</b> завершить регистрацию.\nВведите свою дату рождения в формате <b>dd.mm.yyyy</b> (e.g 14.02.2005)"),
-            string curAction when curAction == "/start" && isUserRegistered && curUserRegistrStatus == RegistrStatus.NeedToFillWishes => BotActions.BotActions.VariableMessageError(_telegramBotClient, message, cancellationToken, "Cперва <b>необходимо</b> завершить регистрацию.\nНапишите свои пожелания ко дня рождения:"),
-            string curAction when (curAction == "/start" || curAction == "/menu") && isUserRegistered && curUserRegistrStatus == RegistrStatus.FullyRegistrated => BotActions.BotActions.MainUserMenu(_telegramBotClient, message, cancellationToken),
-            string curAction when curUserRegistrStatus == RegistrStatus.NewUser => BotActions.BotActions.FillUserDateOfBirth(_telegramBotClient, message, _usersDataRepository, currentUser, cancellationToken),
-            string curAction when curUserRegistrStatus == RegistrStatus.CreatingNewGroup => BotActions.BotActions.CreateNewGroup(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
-            string curAction when curUserRegistrStatus == RegistrStatus.JoiningExistingGroup => BotActions.BotActions.JoinGroupOfUsers(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
-            string curAction when curUserRegistrStatus == RegistrStatus.NeedToFillWishes => BotActions.BotActions.FillUserWishes(_telegramBotClient, message, _usersDataRepository, currentUser, cancellationToken),
-            string curAction when curUserRegistrStatus == RegistrStatus.EditDateOfBirth => BotActions.BotActions.EditUserDateOfBirth(_telegramBotClient, message, _usersDataRepository, currentUser, cancellationToken),
-            string curAction when curUserRegistrStatus == RegistrStatus.ChoosingGroupToManage => BotActions.BotActions.UserChooseGroupToEdit(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
-            string curAction when curUserRegistrStatus == RegistrStatus.ChoosingUserToGiveModeratorAccess => BotActions.BotActions.GiveUserFromTheGroupModeratorAcess(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
-            string curAction when curUserRegistrStatus == RegistrStatus.ChoosingUserToKickOutFromTheGroup => BotActions.BotActions.KickOutUserFromTheGroup(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
-            string curAction when curUserRegistrStatus == RegistrStatus.EditGroupName => BotActions.BotActions.EditGroupNameModerAction(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
-            string curAction when curUserRegistrStatus == RegistrStatus.EditGroupAdditionalInfo => BotActions.BotActions.EditGroupAdditinalInfoModerAction(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
-            string curAction when curUserRegistrStatus == RegistrStatus.EditUserWishes => BotActions.BotActions.EditUserWishes(_telegramBotClient, message, _usersDataRepository, currentUser, cancellationToken),
-            _ => BotActions.BotActions.VariableMessageError(_telegramBotClient, message, cancellationToken)
+            //Unregistrated
+            string curAction when !isUserRegistered => CoreMessageActions.FirstTimeText(_telegramBotClient, message, cancellationToken),
+
+            //Testing unit
+            string curAction when curAction == "/test" && (currentUser.UserId == 626787041)  => TestMessageActions.TestDalMenuShow(_telegramBotClient, message, cancellationToken),
+
+            //Registr
+            string curAction when curAction == "/start" && isUserRegistered && curUserRegistrStatus == RegistrStatus.NewUser => CoreMessageActions.VariableMessageError(_telegramBotClient, message, cancellationToken, "Cперва <b>необходимо</b> завершить регистрацию.\nВведите свою дату рождения в формате <b>dd.mm.yyyy</b> (e.g 14.02.2005)"),
+            string curAction when curAction == "/start" && isUserRegistered && curUserRegistrStatus == RegistrStatus.NeedToFillWishes => CoreMessageActions.VariableMessageError(_telegramBotClient, message, cancellationToken, "Cперва <b>необходимо</b> завершить регистрацию.\nНапишите свои пожелания ко дня рождения:"),
+            string curAction when (curAction == "/start" || curAction == "/menu") && isUserRegistered && curUserRegistrStatus == RegistrStatus.FullyRegistrated => CoreMessageActions.MainUserMenu(_telegramBotClient, message, cancellationToken),
+            string curAction when curUserRegistrStatus == RegistrStatus.NewUser => RegistrMessageActions.FillUserDateOfBirth(_telegramBotClient, message, _usersDataRepository, currentUser, cancellationToken),
+            string curAction when curUserRegistrStatus == RegistrStatus.NeedToFillWishes => RegistrMessageActions.FillUserWishes(_telegramBotClient, message, _usersDataRepository, currentUser, cancellationToken),
+
+            //Edit personal data actions
+            string curAction when curUserRegistrStatus == RegistrStatus.EditDateOfBirth => PersonalDataMessageActions.EditUserDateOfBirth(_telegramBotClient, message, _usersDataRepository, currentUser, cancellationToken),
+            string curAction when curUserRegistrStatus == RegistrStatus.EditUserWishes => PersonalDataMessageActions.EditUserWishes(_telegramBotClient, message, _usersDataRepository, currentUser, cancellationToken),
+
+            //Groups core message actions
+            string curAction when curUserRegistrStatus == RegistrStatus.CreatingNewGroup => GroupCoreMessageActions.CreateNewGroup(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+            string curAction when curUserRegistrStatus == RegistrStatus.JoiningExistingGroup => GroupCoreMessageActions.JoinGroupOfUsers(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+
+            //Manage group message menus
+            string curAction when curUserRegistrStatus == RegistrStatus.ChoosingGroupToManage => ManageGroupMessageMenus.UserChooseGroupToEdit(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+
+            //Manage groups message actions
+            string curAction when curUserRegistrStatus == RegistrStatus.ChoosingUserToGiveModeratorAccess =>  ManageGroupMessageActions.GiveUserFromTheGroupModeratorAcess(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+            string curAction when curUserRegistrStatus == RegistrStatus.ChoosingUserToKickOutFromTheGroup => ManageGroupMessageActions.KickOutUserFromTheGroup(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+            string curAction when curUserRegistrStatus == RegistrStatus.EditGroupName => ManageGroupMessageActions.EditGroupNameModerAction(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+            string curAction when curUserRegistrStatus == RegistrStatus.EditGroupAdditionalInfo => ManageGroupMessageActions.EditGroupAdditinalInfoModerAction(_telegramBotClient, message, _usersDataRepository, _groupsDataRepository, currentUser, cancellationToken),
+
+            //Unknown message
+            _ => CoreMessageActions.VariableMessageError(_telegramBotClient, message, cancellationToken)
         };
 
         Message sentMessage = await action;
