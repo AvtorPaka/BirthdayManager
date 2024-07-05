@@ -15,6 +15,10 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
     ContentRootPath = Directory.GetCurrentDirectory()
 });
 
+builder.WebHost.ConfigureKestrel (c => {
+    c.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(15);
+});
+
 // Setup bot configuration
 if (builder.Environment.IsProduction())
 {

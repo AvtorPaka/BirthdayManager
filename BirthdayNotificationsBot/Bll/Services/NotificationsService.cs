@@ -4,7 +4,6 @@ using BirthdayNotificationsBot.Dal.Models;
 using BirthdayNotificationsBot.Dal.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Telegram.Bot;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace BirthdayNotificationsBot.Bll.Services;

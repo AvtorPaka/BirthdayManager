@@ -27,7 +27,7 @@ public class ApplicationDbContext : DbContext
         ILoggerFactory EfCoreLoggerFactory = LoggerFactory.Create(builder => {
             builder.AddFilter((category, level) => 
                 category == DbLoggerCategory.Database.Command.Name 
-                && level == LogLevel.Information
+                && level == LogLevel.Warning
             ).AddProvider(new AppLoggerProvider(dirToLogData));
         });
 

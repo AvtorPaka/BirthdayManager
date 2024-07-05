@@ -489,3 +489,5 @@ appsettings.Production.json
 *.db
 *.db-shm
 *.db-wal
+*.crt
+*.key
