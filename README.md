@@ -1,5 +1,6 @@
 # Telegram bot for birthday management and birthday reminders.
 The bot was developed for everyone who forgets to congratulate their friends on their birthday or doesn't know what they want as a gift.
+
 **Link to the bot:** [@BirthdayManagementBot](https://t.me/BirthdayManagementBot)
 
 ## How to use?
