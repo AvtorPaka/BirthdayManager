@@ -33,7 +33,7 @@ public static class GroupCoreMessageActions
         try
         {
             Group groupToAddUser = await groupsDataRepository.GetGroupById(currentGroupId, cancellationToken);
-            groupKeyToAddUser = groupToAddUser.GroupKey;
+            groupKeyToAddUser = groupToAddUser.GroupKey.Trim();
         }
         catch (ArgumentNullException)
         {
@@ -44,7 +44,7 @@ public static class GroupCoreMessageActions
             Console.WriteLine($"{ex.Message}\nError occured while trying to parse new group data.");
             return await CoreMessageActions.VariableMessageError(telegramBotClient, message, cancellationToken, "&#9940; <b>Невозможно</b> войти в группу.\nПопробуйте <b>позже.</b>");
         }
-
+        
         if (!string.Equals(currentGroupKey, groupKeyToAddUser, StringComparison.Ordinal))
         {
             return await CoreMessageActions.VariableMessageError(telegramBotClient, message, cancellationToken, $"&#9940; Введёный <b>пароль</b> неверен.\n<b>Проверьте</b> правильность вводимых данных или попробуйте <b>позже.</b>");
@@ -105,7 +105,7 @@ public static class GroupCoreMessageActions
         long groupIdCreated = await GroupIdGenerator.GenerateGroupId(groupsDataRepository, cancellationToken);
         try
         {
-            Group groupToAdd = new Group { GroupId = groupIdCreated, GroupKey = createGroupInfo[0], GroupName = createGroupInfo[1], GroupInfo = createGroupInfo.Length >= 3 ? createGroupInfo[2] : "N/a" };
+            Group groupToAdd = new Group { GroupId = groupIdCreated, GroupKey = createGroupInfo[0].Trim(), GroupName = createGroupInfo[1], GroupInfo = createGroupInfo.Length >= 3 ? createGroupInfo[2] : "N/a" };
             await groupsDataRepository.AddGroup(groupToAdd, cancellationToken);
             await usersDataRepository.AddGroupToUser(userBll.UserId, groupIdCreated, cancellationToken, true);
 
