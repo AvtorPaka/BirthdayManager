@@ -66,7 +66,7 @@ docker run \
 * Create secrets.json and claim UserSecretsId
 
 ```shell
-cd Birthday.Notifications.Telegram.Bot/BirthdayNotificationsBot
+cd BirthdayNotificationsBot
 dotnet user-secrets init
 grep "UserSecretsId" BirthdayNotificationsBot.csproj
     <UserSecretsId>{YOUR_USER_SECRETS_ID}</UserSecretsId>
@@ -93,14 +93,13 @@ echo '{
 * Native
 
 ```shell
-cd Birthday.Notifications.Telegram.Bot/BirthdayNotificationsBot
+cd BirthdayNotificationsBot
 dotnet run
 ```
 
 * Or via docker
 
 ```shell
-cd Birthday.Notifications.Telegram.Bot
 docker buildx build -t telegram-bot-image:local .
 docker run -d -p 8443:8080 --name telegram-bot-contaier telegram-bot-image:local
 ```
@@ -116,7 +115,7 @@ docker run -d -p 8443:8080 --name telegram-bot-contaier telegram-bot-image:local
 * Create secrets.json and claim UserSecretsId
 
 ```shell
-cd Birthday.Notifications.Telegram.Bot/BirthdayNotificationsBot
+cd BirthdayNotificationsBot
 dotnet user-secrets init
 grep "UserSecretsId" BirthdayNotificationsBot.csproj
     <UserSecretsId>{YOUR_USER_SECRETS_ID}</UserSecretsId>
@@ -154,7 +153,6 @@ echo "password" > <your_path>/db_password.txt
 * Create and fill .env file
 
 ```shell
-cd Birthday.Notifications.Telegram.Bot
 touch .env
 echo "MYSQL_PORT={YOUR_MYSQL_PORT}
 MYSQL_DATABASE={YOUR_DB_NAME}
@@ -165,7 +163,7 @@ MYSQL_PASSWORD_PATH={YOUR_PATH}" > .env
 
 ### 2. Nginx
 
-* **Put your ssl certs and keys in .PEM format into Birthday.Notifications.Telegram.Bot/nginx/ssl folder.**
+* **Put your ssl certs and keys in .PEM format into nginx/ssl folder.**
 
     **Specifically provide:** 
 
@@ -173,7 +171,7 @@ MYSQL_PASSWORD_PATH={YOUR_PATH}" > .env
     2. **certificate.key**
     3. **certificate_ca.crt**
 
-* **In order to set your own Ssl certs data, server_name, resolver and proxy_pass, change nginx.conf in directory Birthday.Notifications.Telegram.Bot/nginx**
+* **In order to set your own Ssl certs data, server_name, resolver and proxy_pass, change nginx.conf in nginx directory**
 
 ### 3. Running
 
