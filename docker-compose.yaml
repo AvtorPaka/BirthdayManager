@@ -1,20 +1,64 @@
 version: '3.7'
 
 services:
-  bot:
+  telegram-bot:
     container_name: birthday-bot
-    platform: linux/amd64
+    platform: linux/amd64 #linux/arm64
     restart: always
+    networks:
+      - bot-bridge
     build:
       dockerfile: Dockerfile
+    depends_on:
+      - database
+  
+  database:
+    image: mysql:8.4
+    container_name: mysql-database
+    platform: linux/amd64 #linux/arm64
+    restart: always
+    networks:
+      - bot-bridge
+    secrets:
+      -db_root_password
+      -db_password
+    env_file:
+      - .env
+    environment:
+      - MYSQL_DATABASE: ${MYSQL_DATABASE}
+      - MYSQL_USER: ${MYSQL_USER}
+      - MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      - MYSQL_PASSWORD: /run/secrets/db_password
+    volumes:
+      - mysql-db-volume:/var/lib/mysql/
+    ports:
+      - ${MYSQL_PORT}:3306
+
+
   nginx:
     container_name: nginx
-    platform: linux/amd64
+    platform: linux/amd64 #linux/arm64
     restart: always
     build:
       context: nginx
       dockerfile: Dockerfile
     ports:
       - "443:443"
+    networks:
+      - bot-bridge
     depends_on:
       - bot
+      
+volumes:
+  mysql-db-volume:
+    driver: local
+
+networks:
+  bot-bridge:
+    driver: bridge
+
+secrets:
+  db_root_password:
+    file: ${MYSQL_ROOT_PASSWORD_PATH}
+  db_password:
+    fule: ${MYSQL_PASSWORD_PATH}
